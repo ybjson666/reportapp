@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "MI-TOOL",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 20,
+  "usingComponents": {
+    "e-picker": "/components/e-picker/e-picker",
+    "uni-load-more": "/components/uni-load-more/uni-load-more",
+    "wyb-loading": "/components/wyb-loading/wyb-loading",
+    "level-linkage": "/components/three-level-linkage/linkage"
+  }
+}

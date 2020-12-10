@@ -1,0 +1,34 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*每个页面公共css */
+uni-page-body{
+	height: 100%;
+	font-size: 26rpx;
+}
+uni-image{
+	width: 100%;
+	height: 100%;
+}
+.button{
+	background: #8FA8FF;
+	color: #fff;
+	-webkit-border-radius: 24rpx;
+	        border-radius: 24rpx;
+	font-size: 28rpx;
+	height: 96rpx;
+	line-height: 96rpx;
+}
+
