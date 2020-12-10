@@ -2,54 +2,68 @@
 	<view class="home-container">
 		<view class="goods-list">
 			<view class="goods-item" v-for="(item,index) in goodList" :key="index">
-				<view class="goods-name">{{item.name}}</view>
-				<view class="goods-desc">{{item.desc}}</view>
+				<view class="goods-name">{{item.title}}</view>
+				<view class="goods-desc">{{item.info}}</view>
 				<view class="goods-pic"><image :src="item.pic"></image></view>
 			</view>
 		</view>
+		<uni-load-more :status="loadStatus" iconType="circle" v-show="isLoadMore"></uni-load-more>
 	</view>
 </template>
 
 <script>
+	import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue"
 	export default {
 		data() {
 			return {
-				goodList:[
-					{
-						"name":"粉色记忆",
-						"desc":"AMORELIE情趣xTPstudio摄影",
-						"pic":"../../static/images/goods01.png"
-					},
-					{
-						"name":"粉色记忆",
-						"desc":"AMORELIE情趣xTPstudio摄影",
-						"pic":"../../static/images/goods02.png"
-					},
-					{
-						"name":"粉色记忆",
-						"desc":"AMORELIE情趣xTPstudio摄影",
-						"pic":"../../static/images/goods03.png"
-					},
-					{
-						"name":"粉色记忆",
-						"desc":"AMORELIE情趣xTPstudio摄影",
-						"pic":"../../static/images/goods02.png"
-					},
-					{
-						"name":"粉色记忆",
-						"desc":"AMORELIE情趣xTPstudio摄影",
-						"pic":"../../static/images/goods01.png"
-					},
-					{
-						"name":"粉色记忆",
-						"desc":"AMORELIE情趣xTPstudio摄影",
-						"pic":"../../static/images/goods03.png"
-					}
-					
-				]
+				page:1,
+				goodList:[],
+				loadStatus:'',
+				isLoadMore:true
 			}
 		},
 		methods: {
+			async getList(type){
+				const { page }=this;
+				let params={
+					url:'/web/api/news/NewsList',
+					data:{
+						page
+					},
+					types:'GET'
+				}
+				const result=await this.$http(params);
+				if(result.data.code===200){
+					let list=result.data.data.data;
+					this.page++
+					//this.shouldLoad=result.data.data.data.length>=result.data.dataper_page;//判断是否加载下一页，如果请求的数据的条数大于等于每页的条数就可以加载下一页，否则就不加载下一页
+					if(type==='fresh'){
+						this.goodList=list;
+						uni.stopPullDownRefresh();
+					}else{
+						this.goodList=this.goodList.concat(list);
+					}
+				}else if(result.data.code===204){
+					this.loadStatus='noMore'
+				}else{
+					this.showToast(result.data.message);
+				}
+			}
+		},
+		created(){
+			this.getList('fresh');
+		},
+		onPullDownRefresh() {
+			this.page=1;
+			setTimeout(()=>{
+				this.getList('fresh');
+			},500)
+		},
+		onReachBottom(){
+			this.loadStatus='loading'
+			setTimeout(()=>{
+				this.getList('loadMore');
+			},500)
 			
 		}
 	}

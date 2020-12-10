@@ -8,7 +8,7 @@
 					<view class="row-label">账号</view>
 					<view class="login-rows" :class="{activeAccount:seleRows=='account'}">
 						<view class="row-icon acc-icon"></view>
-						<input class="uni-input" type="text" placeholder="请输入账号" v-model="account" @focus="focusEnv('account')"/>
+						<input class="uni-input" type="text" placeholder="请输入账号" v-model="phone" @focus="focusEnv('account')"/>
 					</view>
 				</view>
 				<view class="login-rows-block">
@@ -18,7 +18,7 @@
 						<input class="uni-input" type="password" placeholder="请输入密码" v-model="pwd" @focus="focusEnv('pwd')"/>
 					</view>
 				</view>
-				<view class="login-rows-block">
+				<view class="login-rows-block" v-show="isFail">
 					<view class="row-label">验证码</view>
 					<view class="login-rows very-rows" :class="{activeCode:seleRows=='code'}">
 						<view class="row-icon code-icon"></view>
@@ -26,7 +26,7 @@
 						<view class="code-btn">1264</view>
 					</view>
 				</view>
-				<button class="login-btn button" @click="login">登陆</button>
+				<button class="login-btn button" @click="login" :disabled="isLogin">登陆</button>
 				<view class="forget-rows"><text @click="goFindPwd">忘记密码?</text></view>
 			</view>
 		</view>
@@ -42,10 +42,12 @@
 	export default{
 		data(){
 			return{
-				account:"",
+				phone:"",
 				pwd:"",
 				verycode:"",
-				seleRows:""
+				seleRows:"",
+				isFail:false,
+				isLogin:false
 			}
 		},
 		methods:{
@@ -58,25 +60,38 @@
 				});
 			},
 			async login(){
-				const {account,pwd}=this;
-				if(!account){
+				const {phone,pwd}=this;
+				if(!phone){
 					this.showToast("请输入账号");
 					return;
 				}else if(!pwd){
 					this.showToast("请输入密码");
 					return;
 				}
-				
+				this.isLogin=true;
 				let params={
-					url:'/api/user/UserLogin',
+					url:'/web/api/user/UserLogin',
 					data:{
-						account,
+						phone,
 						pwd
 					}
 				}
 				
 				const result=await this.$http(params);
-				console.log(result);
+				if(result.data.code===200){
+					this.isLogin=false;
+					this.showToast('登陆成功');
+					uni.setStorageSync('appToken', result.data.data.token);
+					uni.setStorageSync('uid', result.data.data.user_id);
+					setTimeout(()=>{
+						uni.switchTab({
+							url:'/pages/home/index'
+						})
+					},1500)
+				}else{
+					this.showToast(result.data.message);
+					this.isLogin=false;
+				}
 			},
 			wxLogin(){
 				uni.getProvider({

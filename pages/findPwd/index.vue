@@ -24,11 +24,11 @@
 						<view class="row-label">验证码</view>
 						<view class="login-rows very-rows" :class="{activeCode:seleRows=='code'}">
 							<view class="row-icon code-icon"></view>
-							<input class="uni-input" type="number" placeholder="请输入验证码" v-model="verycode" @focus="focusEnv('code')"/>
-							<view class="code-btn" @click="getCode('two')">再次获取</view>
+							<input class="uni-input" type="number" placeholder="请输入验证码" v-model="code" @focus="focusEnv('code')"/>
+							<button class="code-btn" @click="getCode('two')" :disabled="isGetCode">{{codeTxt}}</button>
 						</view>
 					</view>
-					<button class="button" :disabled="isGetCode" @click="subVerfy">提交验证</button>
+					<button class="button" :disabled="isGetCode2" @click="subVerfy">提交验证</button>
 					<view class="error-txt"><text>无法收到验证码?</text></view>
 				</view>
 				<view v-else-if="step==='three'">
@@ -40,9 +40,9 @@
 					</view>
 					<view class="find-rows-block">
 						<view class="row-label">密码</view>
-						<view class="login-rows" :class="{activePwd:seleRows=='pwd'}">
+						<view class="login-rows" :class="{activePwd:seleRows=='pwd1'}">
 							<view class="row-icon pwd-icon"></view>
-							<input class="uni-input" type="password" placeholder="请输入8 — 16位密码" v-model="pwd" @focus="focusEnv('pwd')"/>
+							<input class="uni-input" type="password" placeholder="请输入8 — 16位密码" v-model="pwd1" @focus="focusEnv('pwd1')"/>
 						</view>
 					</view>
 					<view class="find-rows-block">
@@ -65,13 +65,15 @@
 		data(){
 			return{
 				//界面渲染步骤
-				step:'one',
+				step:"one",
 				phone:"",
 				seleRows:"",
 				isGetCode:false,
-				verycode:"",
-				pwd:"",
-				pwd2:""
+				isGetCode2:false,
+				code:"",
+				pwd1:"",
+				pwd2:"",
+				codeTxt:"再次获取"
 			}
 		},
 		methods:{
@@ -87,7 +89,7 @@
 					this.showToast("手机号格式错误");
 					return;
 				}
-				//this.isGetCode=true;
+				this.isGetCode=true;
 				let params={
 					url:'/web/api/other/SmsSend',
 					data:{
@@ -95,28 +97,64 @@
 					}
 				}
 				const result=await this.$http(params);
-				// if(types==='one'){
-				// 	this.step='two'
-				// }
+				if(result.data.code==200){
+					if(types==='one'){
+						this.isGetCode=false;
+						this.step='two';
+					}else{
+						let sec=60
+						let str=""
+						let timer=setInterval(()=>{
+							sec--
+							str=sec+'s'
+							if(sec<=0){
+								sec=60;
+								this.isGetCode=false;
+								str="再次获取";
+								clearInterval(timer);
+							}
+							this.codeTxt=str;
+						},1000);
+					}
+				}else{
+					this.isGetCode=false;
+					this.showToast(result.data.message);
+				}
+				
 				
 			},
 			async subVerfy(){
-				const { verycode,phone }=this;
-				
-				if(!verycode){
+				const { code,phone }=this;
+				this.isGetCode=false;
+				if(!code){
 					this.showToast("请输入验证码")
 					return;
 				}
 				
-				//this.isGetCode=true;
-				this.step='three';
+				this.isGetCode2=true;
+				let params={
+					url:'/web/api/other/ProofCode',
+					data:{
+						phone,
+						code
+					}
+				}
+				const result=await this.$http(params);
+				if(result.data.code==200){
+					this.isGetCode2=false;
+					this.step='three';
+				}else{
+					this.showToast(result.data.message);
+					this.isGetCode2=false;
+				}
+				
 			},
 			async sureModify(){
-				const { phone,pwd,pwd2 }=this;
-				if(!pwd){
+				const { phone,pwd1,pwd2 }=this;
+				if(!pwd1){
 					this.showToast("请输入密码")
 					return
-				}else if(!reg_pwd.test(pwd)){
+				}else if(!reg_pwd.test(pwd1)){
 					this.showToast("密码格式错误")
 					return
 				}else if(!pwd2){
@@ -125,15 +163,30 @@
 				}else if(!reg_pwd.test(pwd2)){
 					this.showToast("密码格式错误")
 					return
-				}else if(pwd!==pwd2){
+				}else if(pwd1!==pwd2){
 					this.showToast("两次密码不一致")
 					return
 				}
 				
-				//this.isGetCode=true;
-				uni.navigateTo({
-					url:'../findSucc/index'
-				})
+				this.isGetCode=true;
+				let params={
+					url:"/web/api/user/UserSetPwd",
+					data:{
+						phone,
+						pwd1,
+						pwd2
+					}
+				}
+				const result=await this.$http(params)
+				if(result.data.code===200){
+					this.isGetCode=false
+					uni.navigateTo({
+						url:'../findSucc/index'
+					})
+				}else{
+					this.showToast(result.data.message);
+					this.isGetCode=false;
+				}
 			}
 		}
 	}
@@ -248,6 +301,9 @@
 							color: #ff94b4;
 							top:-20rpx;
 							font-size: 20rpx;
+						}
+						.code-btn:after{
+							border:none;
 						}
 					}
 				}

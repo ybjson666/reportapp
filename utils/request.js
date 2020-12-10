@@ -1,14 +1,10 @@
 import { BASE_URL } from './config.js';
 
-const baseData={
-	access_token:uni.getStorageSync('appToken')||""
-}
 export default (postData,callback)=>{
-	let reqData=Object.assign({},baseData,postData.data)
 	return new Promise((resolve,reject)=>{
 		uni.request({
 		    url:postData.url ,
-		    data:reqData||{},
+		    data:postData.data||{},
 			header:{
 				"Content-Type":"application/x-www-form-urlencoded"
 			},
