@@ -88,6 +88,12 @@
 			"style":{
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/addCard/index",
+			"style":{
+				"navigationStyle": "custom"
+			}
 		}
     ],
 	"globalStyle": {

@@ -3,6 +3,20 @@
 		<view class="card-header"></view>
 		<view class="back-btn" @click="goback"><image src="../../static/images/left.png"></image></view>
 		<view class="card-content">
+			<view class="card-block">
+				<view class="card-title">我的卡</view>
+				<view class="card-list">
+					<view class="card-item" v-for="(item,index) in cardList" :key="index">
+						<text class="card-num">{{replaceName(item.number)}}</text>
+						<text class="card-name">{{item.bank_name}}</text>
+						<text class="card-user">用户名 {{item.real_name}}</text>
+					</view>
+				</view>
+				<view class="btn-block">
+					<view class="add-btn card-btn" @click="skipPage('../addCard/index')">添加银行卡</view>
+					<view class="cash-btn card-btn">前往提现</view>
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -11,13 +25,47 @@
 	export default{
 		data(){
 			return{
-				
+				cardList:[]
 			}
 		},
 		methods:{
 			goback(){
-				uni.navigateBack()
+				uni.switchTab({
+					url:'/pages/myInfo/index'
+				})
+			},
+			skipPage(url){
+				uni.navigateTo({
+					url
+				})
+			},
+			replaceName(num){
+				let firstStr=num.slice(0,3);
+				let lastStr=num.slice(-3,num.length);
+				return `${firstStr}***${lastStr}`
+			},
+			async getCardList(){
+				const token=uni.getStorageSync('appToken');
+				const uid=uni.getStorageSync('uid');
+				
+				let params={
+					url:'/web/api/user/UserBankList',
+					data:{
+						token,
+						uid
+					}
+				}
+				
+				const result=await this.$http(params);
+				if(result.data.code===200){
+					this.cardList=result.data.data;
+				}else{
+					this.showToast(result.data.message);
+				}
 			}
+		},
+		created(){
+			this.getCardList()
 		}
 	}
 </script>
@@ -36,17 +84,70 @@
 			height: 48rpx;
 			left: 20rpx;
 			top:20rpx;
-			z-index: 20;
+			z-index: 50;
 		}
 		.card-content{
 			height: calc(100% - 50rpx);
 			width: 100%;
-			background: url('../../static/images/card_bg.png') no-repeat 12rpx;
+			background: url('../../static/images/card_bg.png') no-repeat;
 			background-size: 100% 100%;
 			position: absolute;
 			top: 50rpx;
 			left: 0;
 			z-index: 10;
+			padding: 0 60rpx;
+			padding-top: 310rpx;
+			box-sizing: border-box;
+			.card-block{
+				.card-title{
+					color: #707070;
+					font-size: 32rpx;
+					margin-bottom: 48rpx;
+				}
+				.card-list{
+					border-bottom:1px solid #eaeaea;
+					.card-item{
+						height: 94rpx;
+						line-height: 94rpx;
+						border-top:1px solid #eaeaea;
+						box-sizing: border-box;
+						color: #707070;
+						font-size: 28rpx;
+						.card-name{
+							margin-right: 44rpx;
+							margin-left: 52rpx;
+						}
+					}
+				}
+				.btn-block{
+					display: flex;
+					margin-top: 62rpx;
+					.card-btn{
+						width: 144rpx;
+						height: 54rpx;
+						text-align: center;
+						line-height: 54rpx;
+						color: #fff;
+						font-size: 22rpx;
+						border-radius: 10rpx;
+						margin: 0;
+					}
+					.add-btn{
+						background: #BBCAFF;
+						margin-right: 116rpx;
+					}
+					.cash-btn{
+						background: #FEC4D6;
+					}
+				}
+			}
+		}
+	}
+	@media screen and (min-height: 800px) {
+		.card-container{
+			.card-content{
+				padding-top: 350rpx;
+			}
 		}
 	}
 </style>

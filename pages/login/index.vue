@@ -83,6 +83,7 @@
 					this.showToast('登陆成功');
 					uni.setStorageSync('appToken', result.data.data.token);
 					uni.setStorageSync('uid', result.data.data.user_id);
+					uni.setStorageSync('phone', result.data.data.phone);
 					setTimeout(()=>{
 						uni.switchTab({
 							url:'/pages/home/index'
