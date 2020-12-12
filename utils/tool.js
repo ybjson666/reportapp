@@ -41,3 +41,16 @@ export const getContact=()=>{
 	})
 	
 }
+
+export const maskStyle={
+	position: 'fixed',
+	bottom: 0,
+	top: 0,
+	left: 0,
+	right: 0,
+	zIndex:60,
+	display:'flex',
+	backgroundColor:'rgba(0, 0, 0, 0.5)',
+	alignItems:'center',
+	justifyContent:'center'
+}

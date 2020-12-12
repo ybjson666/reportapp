@@ -70,7 +70,7 @@
 				}
 				this.isLogin=true;
 				let params={
-					url:'/web/api/user/UserLogin',
+					url:'/api/user/UserLogin',
 					data:{
 						phone,
 						pwd
@@ -115,24 +115,23 @@
 				    }
 				});
 			}
-		},
-		mounted(){
-			
-			
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	@import '../../static/scss/common.scss';
+	
 	.login-container{
 		background-color: #fff;
 		background-image: url("../../static/images/bg_login.png");
 		background-repeat: no-repeat;
 		background-size: contain;
-		height: 100%;
+		min-height: 100%;
 		padding-top: 100rpx;
 		box-sizing: border-box;
 		position: relative;
+		padding-bottom: 100rpx;
 		.tip{
 			width: 252rpx;
 			height: 82rpx;
@@ -258,7 +257,7 @@
 			
 		}
 	}
-	@media screen and (min-height: 800px) {
+	@media screen and (min-height: $minH+px) {
 		.login-container{
 			padding-top: 200rpx;
 			.tip{

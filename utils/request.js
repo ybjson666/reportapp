@@ -3,7 +3,7 @@ import { BASE_URL } from './config.js';
 export default (postData,callback)=>{
 	return new Promise((resolve,reject)=>{
 		uni.request({
-		    url:postData.url ,
+		    url:BASE_URL+postData.url ,
 		    data:postData.data||{},
 			header:{
 				"Content-Type":"application/x-www-form-urlencoded"

@@ -46,4 +46,16 @@
 	.cl{
 		clear: both;
 	}
+	
+	.uni-checkbox-input{
+		width: 32rpx !important;
+		height: 32rpx !important;
+	}
+	.uni-label-pointer{
+		color: #707070;
+		font-size: 24rpx;
+	}
+	.uni-table{
+		min-width: 200px!important;
+	}
 </style>

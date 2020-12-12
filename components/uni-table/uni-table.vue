@@ -159,7 +159,7 @@
     }
 
     .table--border {
-        border: 1px #ddd solid;
+        border: none;
     }
 
     .border-none {

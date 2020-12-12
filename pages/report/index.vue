@@ -28,7 +28,7 @@
 				const uid=uni.getStorageSync('uid');
 				const token=uni.getStorageSync('appToken');
 				let params={
-					url:'/web/api/work/goodsInfo',
+					url:'/api/work/goodsInfo',
 					data:{
 						uid,
 						token

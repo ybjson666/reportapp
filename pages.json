@@ -94,6 +94,32 @@
 			"style":{
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/cash/index",
+			"style":{
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/pwdset/index",
+			"style":{
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/myCount/index",
+			"style":{
+				"navigationBarTitleText": "业绩统计",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/message/index",
+			"style":{
+				"navigationBarTitleText": "消息管理",
+				"enablePullDownRefresh": true
+			}
 		}
     ],
 	"globalStyle": {
@@ -121,6 +147,7 @@
 	    "selectedColor": "#3cc51f",
 	    "borderStyle": "white",
 	    "backgroundColor": "#ffffff",
+		"iconWidth":"36",
 	    "list": [{
 	        "pagePath": "pages/home/index",
 	        "iconPath": "static/images/tab_info.png",

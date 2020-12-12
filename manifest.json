@@ -68,18 +68,18 @@
             "urlCheck" : false
         },
         "usingComponents" : true
-    },
-    "h5": {
-        "devServer": {
-            "https":false,
-            "proxy": {
-                "/web": {
-                    "target": "http://mitoo.zbyj.top",
-                    "changeOrigin": true,
-                    "secure": false,
-                    "pathRewrite":{"^/web":""}
-                }
-            }
-        }
     }
+    // "h5": {
+    //     "devServer": {
+    //         "https":false,
+    //         "proxy": {
+    //             "/web": {
+    //                 "target": "http://mitoo.zbyj.top",
+    //                 "changeOrigin": true,
+    //                 "secure": false,
+    //                 "pathRewrite":{"^/web":""}
+    //             }
+    //         }
+    //     }
+    // }
 }

@@ -22,7 +22,7 @@
 				<view class="share-item">
 					<text>推广分享</text>
 				</view>
-				<view class="manger-item">
+				<view class="manger-item" @click="skipPage('../message/index')">
 					<text>消息管理</text>
 				</view>
 			</view>
@@ -73,6 +73,11 @@
 		},
 		methods: {
 			skipPage(url){
+				if(url==='../login/index'){
+					uni.removeStorageSync('appToken');
+					uni.removeStorageSync('uid');
+					uni.removeStorageSync('phone');
+				}
 				uni.navigateTo({
 					url
 				})
@@ -82,6 +87,7 @@
 </script>
 
 <style lang="scss" scoped>
+@import '../../static/scss/common.scss';
 .myinfo-container{
 	height: 100%;
 	background-image: url('../../static/images/info_bg.png');
@@ -192,7 +198,7 @@
 		}
 	}
 }
-@media screen and (min-height: 800px) {
+@media screen and (min-height: $minH+px) {
 		.myinfo-container{
 			padding-top: 390rpx;
 		}

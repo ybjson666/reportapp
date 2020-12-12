@@ -35,11 +35,13 @@
 			</view>
 		</view>
 		<lb-picker ref="picker" :list="cardList" @confirm="confirm"></lb-picker>
+		<wyb-loading ref="loading"/>
 	</view>
 </template>
 
 <script>
 	import LbPicker from '@/components/lb-picker'
+	import wybLoading from '@/components/wyb-loading/wyb-loading.vue'
 	import { reg_card } from '../../utils/regexs.js'
 	export default{
 		data(){
@@ -57,7 +59,8 @@
 			}
 		},
 		components:{
-			LbPicker
+			LbPicker,
+			wybLoading
 		},
 		computed:{
 			seleBank(){
@@ -77,11 +80,12 @@
 			},
 			async getBanks(){
 				let params={
-					url:'/web/api/other/banklist'
+					url:'/api/other/banklist'
 				}
 				const result=await this.$http(params);
 				if(result.data.code===200){
 					let arr=result.data.data;
+					this.$refs.loading.hideLoading();
 					this.cardList=arr.map((item)=>{
 						return {
 							label:item.bank_name,
@@ -89,6 +93,7 @@
 						}
 					})
 				}else{
+					this.$refs.loading.hideLoading();
 					this.showToast(result.data.message);
 				}
 			},
@@ -105,7 +110,7 @@
 				let phone =uni.getStorageSync('phone');
 				this.isUse=true;
 				let params={
-					url:'/web/api/other/SmsSend',
+					url:'/api/other/SmsSend',
 					data:{
 						phone
 					}
@@ -157,7 +162,7 @@
 				this.isSave=true;
 				
 				let params={
-					url:"/web/api/user/BindBankCard",
+					url:"/api/user/BindBankCard",
 					data:{uid,bank_id,back_num,name,address,code}
 				}
 				
@@ -169,21 +174,24 @@
 						nui.navigateBack()
 					},800)
 				}else{
-					this.showToast(resutl.data.message);
+					this.showToast(result.data.message);
 					this.isSave=false;
 				}
 			}
 		},
-		created(){
+		mounted(){
+			this.$refs.loading.showLoading();
 			this.getBanks()
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	@import '../../static/scss/common.scss';
 	.card-container{
 		height: 100%;
 		position: relative;
+		background: #EAEEFC;
 		.card-header{
 			height: 360rpx;
 			background: #eaeefc;
@@ -193,13 +201,14 @@
 			width: 48rpx;
 			height: 48rpx;
 			left: 20rpx;
-			top:20rpx;
+			top:80rpx;
 			z-index: 50;
 		}
 		.card-content{
 			height: calc(100% - 50rpx);
 			width: 100%;
 			background: url('../../static/images/card_bg.png') no-repeat;
+			background-position:0px 20rpx;
 			background-size: 100% 100%;
 			position: absolute;
 			top: 50rpx;
@@ -248,7 +257,7 @@
 			}	
 		}
 	}
-	@media screen and (min-height: 800px) {
+	@media screen and (min-height: $minH+px) {
 		.card-container{
 			.card-content{
 				padding-top: 350rpx;

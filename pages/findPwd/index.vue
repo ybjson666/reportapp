@@ -91,7 +91,7 @@
 				}
 				this.isGetCode=true;
 				let params={
-					url:'/web/api/other/SmsSend',
+					url:'/api/other/SmsSend',
 					data:{
 						phone
 					}
@@ -133,7 +133,7 @@
 				
 				this.isGetCode2=true;
 				let params={
-					url:'/web/api/other/ProofCode',
+					url:'/api/other/ProofCode',
 					data:{
 						phone,
 						code
@@ -170,7 +170,7 @@
 				
 				this.isGetCode=true;
 				let params={
-					url:"/web/api/user/UserSetPwd",
+					url:"/api/user/UserSetPwd",
 					data:{
 						phone,
 						pwd1,

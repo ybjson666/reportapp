@@ -14,19 +14,24 @@
 				</view>
 				<view class="btn-block">
 					<view class="add-btn card-btn" @click="skipPage('../addCard/index')">添加银行卡</view>
-					<view class="cash-btn card-btn">前往提现</view>
+					<view class="cash-btn card-btn" @click="skipPage('../cash/index')">前往提现</view>
 				</view>
 			</view>
 		</view>
+		<wyb-loading ref="loading"/>
 	</view>
 </template>
 
 <script>
+	import wybLoading from '@/components/wyb-loading/wyb-loading.vue'
 	export default{
 		data(){
 			return{
 				cardList:[]
 			}
+		},
+		components:{
+			wybLoading
 		},
 		methods:{
 			goback(){
@@ -49,7 +54,7 @@
 				const uid=uni.getStorageSync('uid');
 				
 				let params={
-					url:'/web/api/user/UserBankList',
+					url:'/api/user/UserBankList',
 					data:{
 						token,
 						uid
@@ -59,21 +64,26 @@
 				const result=await this.$http(params);
 				if(result.data.code===200){
 					this.cardList=result.data.data;
+					this.$refs.loading.hideLoading();
 				}else{
+					this.$refs.loading.hideLoading();
 					this.showToast(result.data.message);
 				}
 			}
 		},
-		created(){
+		mounted(){
+			this.$refs.loading.showLoading();
 			this.getCardList()
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	@import '../../static/scss/common.scss';
 	.card-container{
 		height: 100%;
 		position: relative;
+		background: #EAEEFC;
 		.card-header{
 			height: 360rpx;
 			background: #eaeefc;
@@ -83,13 +93,14 @@
 			width: 48rpx;
 			height: 48rpx;
 			left: 20rpx;
-			top:20rpx;
+			top:80rpx;
 			z-index: 50;
 		}
 		.card-content{
 			height: calc(100% - 50rpx);
 			width: 100%;
 			background: url('../../static/images/card_bg.png') no-repeat;
+			background-position:0px 20rpx;
 			background-size: 100% 100%;
 			position: absolute;
 			top: 50rpx;
@@ -143,7 +154,7 @@
 			}
 		}
 	}
-	@media screen and (min-height: 800px) {
+	@media screen and (min-height: $minH+px) {
 		.card-container{
 			.card-content{
 				padding-top: 350rpx;
