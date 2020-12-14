@@ -11,16 +11,6 @@
 			}
 		},
 		{
-			"path": "pages/regist/index",
-			"style":{
-				"navigationStyle": "custom",
-				"app-plus": {
-				    "softinputNavBar": "none",
-					"softinputMode": "adjustResize"
-				}
-			}
-		},
-		{
 		    "path" : "pages/home/index",
 		    "style" :                                                                                    
 		    {
@@ -119,6 +109,12 @@
 			"style":{
 				"navigationBarTitleText": "消息管理",
 				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/orderInfo/index",
+			"style":{
+				"navigationBarTitleText": "订单详情"
 			}
 		}
     ],

@@ -75,7 +75,7 @@
 			},
 			async save(){
 				let uid =uni.getStorageSync('uid');
-				let token =uni.getStorageSync('appToken');
+				let token =uni.getStorageSync('token');
 				const { pwd,pwd2,code } =this
 				console.log(pwd)
 				

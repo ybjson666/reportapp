@@ -50,7 +50,7 @@
 				return `${firstStr}***${lastStr}`
 			},
 			async getCardList(){
-				const token=uni.getStorageSync('appToken');
+				const token=uni.getStorageSync('token');
 				const uid=uni.getStorageSync('uid');
 				
 				let params={

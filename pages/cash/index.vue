@@ -17,16 +17,16 @@
 				<view class="form-block">
 					<view class="cash-rows">
 						<text class="rows-label">可用余额:</text>
-						<input type="number" disabled v-model="balance" class="rows-input"/>
+						<input type="text" disabled v-model="balance" class="rows-input"/>
 					</view>
 					<view class="cash-rows">
 						<text class="rows-label">申请款项:</text>
-						<input type="number"  v-model="cash" class="rows-input" placeholder="请输入提现金额"/>
+						<input type="number"  v-model="money" class="rows-input" placeholder="请输入提现金额"/>
 						<text class="money">元</text>
 					</view>
 					<view class="cash-rows">
 						<text class="rows-label">安全密码:</text>
-						<input type="password"  v-model="pwd" class="rows-input" placeholder="请输入6位安全密码"/>
+						<input type="password" v-enter-number v-model="pwd" maxlength="6" class="rows-input" placeholder="请输入6位安全密码"/>
 					</view>
 					<view class="cash-rows card-rows">
 						<text class="rows-label">提现至:</text>
@@ -38,21 +38,21 @@
 				<view class="rule-block">
 					<view class="rule-title">提现条款</view>
 					<view class="rule-list">
-						<view class="rule-item" v-for="item in rules"><text>{{item}}</text></view>
+						<view class="rule-item" v-for="(item,index) in rules" :key="index"><text>{{item}}</text></view>
 					</view>
 				</view>
 				
 				<view class="agree-block">
 					 <checkbox-group @change="checkChange">
 						<label>
-							<checkbox value="1"/> 
+							<checkbox value="1" :checked="limitAgree"/> 
 							<text class="label-txt">同意并接受上述条款</text>
 						</label>
 					</checkbox-group>
 				</view>
 				
 				<view class="btn-block">
-					<button class="button" :disabled="!agree">提 现</button>
+					<button class="button" :disabled="isUse" @click="submit" :class="{active:limitAgree}">提 现</button>
 				</view>
 			</view>
 		</view>
@@ -100,21 +100,23 @@
 	export default{
 		data(){
 			return{
-				balance:"1000元",
-				cash:"",
+				balance:"",
+				money:"",
 				pwd:"",
-				bank_id:"",
+				card_id:"",
 				cardList:[],
 				rules:["1.提现审核一般情况下3个工作日内进行审核处理",
 				"2.如遇银行卡信息错误或其他预留可能会被拒绝提现",
 				"3.如遇不可能抗拒因素导致无法进行审核将在恢复后 最快的时间内进行处理",
 				"4.补充条例"],
-				agree:"",
 				showError:false,
 				showAddCard:false,
 				maskClass: maskStyle,
 				modelClass:['fade'],
-				showSucc:false
+				showSucc:false,
+				isUse:false,
+				port:"",
+				limitAgree:false
 			}
 		},
 		components:{
@@ -124,10 +126,10 @@
 		},
 		computed:{
 			seleBank(){
-				const { bank_id,cardList }=this;
+				const { card_id,cardList }=this;
 				let bankName=""
 				cardList.map(item=>{
-					if(item.value==bank_id){
+					if(item.value==card_id){
 						bankName=item.label
 					}
 				})
@@ -141,22 +143,53 @@
 				})
 			},
 			async submit(){
-				const { balance,money,pwd,cardId,cardList}=this;
+				const { limitAgree,card_id,money,pwd,cardList}=this;
+				const uid=uni.getStorageSync('uid')
+				const token=uni.getStorageSync('token')
+				
+				if(!limitAgree){
+					return
+				}
 				if(!money){
 					this.showToast('请填写提现金额')
 					return
-				}else if(!cardId){
-					if(!cartdList.length){
-						弹出添加银行卡弹框
+				}else if(!pwd){
+					this.showToast('请输入支付密码')
+					return
+				}else if(!card_id){
+					if(!cardList.length){
+						this.showAddCard=true;
+						return
 					}else{
 						this.showToast('请选择银行卡')
-						return;
+						return
 					}
+					return
+				}
+				this.isUse=true;
+				
+				let params={
+					url:'/api/user/Withdraw',
+					data:{uid,token,card_id,money,pwd}
+				}
+				const result=await this.$http(params);
+				
+				if(result.data.code==200){
+					this.showToast('提现成功');
+					this.isUse=false
+					this.card_id=""
+					this.money=""
+					this.pwd=""
+					this.limitAgree=false
+					this.refreshUser();
+				}else{
+					this.showToast(result.data.message)
+					this.isUse=false
 				}
 			},
 			async getBanks(){
 				const uid=uni.getStorageSync('uid');
-				const token=uni.getStorageSync('appToken');
+				const token=uni.getStorageSync('token');
 				let params={
 					url:'/api/user/UserBankList',
 					data:{
@@ -180,13 +213,17 @@
 				}
 			},
 			confirm(picker){
-				this.bank_id=picker.value;
+				this.card_id=picker.value;
 			},
 			openCardModal(){
 				this.$refs.picker.show() 
 			},
 			checkChange(e){
-				this.agree=e.target.value[0];
+				if(e.target.value[0]){
+					this.limitAgree=true
+				}else{
+					this.limitAgree=false
+				}
 			},
 			closeModal(types){
 				this[types]=false;
@@ -195,11 +232,48 @@
 				uni.navigateTo({
 					url:'../addCard/index'
 				})
+			},
+			judgeEnviron(){//判断环境
+			    var u = navigator.userAgent;
+			    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+			    var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+			    if (isAndroid) {
+			        return 'android';
+			    }else if (isIOS) {
+			    　　return 'ios';
+			    }else{
+			        return 'pc';
+			    }
+			},
+			async refreshUser(){
+				const uid=uni.getStorageSync('uid')
+				const token=uni.getStorageSync('token')
+				const { port }=this;
+				let params={
+					url:'/api/user/UserRefresh',
+					data:{port,app_version:'1.0',uid,token}
+				}
+				const result=await this.$http(params);
+				if(result.data.code===200){
+					this.balance=result.data.data.money;
+					uni.setStorageSync('balance',result.data.data.money)
+				}else{
+					this.showToast(result.data.message);
+				}
 			}
 		},
 		mounted(){
 			this.$refs.loading.showLoading();
 			this.getBanks()
+		},
+		created(){
+			let env=this.judgeEnviron();
+			if(env==='android'){
+				this.port='1';
+			}else if(env==='ios'){
+				this.port='2';
+			}
+			this.balance=uni.getStorageSync('balance');
 		}
 	}
 </script>
@@ -381,6 +455,14 @@
 				
 				.btn-block{
 					margin-top: 86rpx;
+					.button{
+						background: #f7f7f7;
+						color: rgba(0,0,0,.3);
+					}
+					.active{
+						background: #8FA8FF;
+						color: #fff;
+					}
 					uni-button:after{
 						border: none;
 					}

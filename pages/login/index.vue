@@ -8,7 +8,7 @@
 					<view class="row-label">账号</view>
 					<view class="login-rows" :class="{activeAccount:seleRows=='account'}">
 						<view class="row-icon acc-icon"></view>
-						<input class="uni-input" type="text" placeholder="请输入账号" v-model="phone" @focus="focusEnv('account')"/>
+						<input class="uni-input" type="number" placeholder="请输入账号" v-model="phone" @focus="focusEnv('account')"/>
 					</view>
 				</view>
 				<view class="login-rows-block">
@@ -81,9 +81,11 @@
 				if(result.data.code===200){
 					this.isLogin=false;
 					this.showToast('登陆成功');
-					uni.setStorageSync('appToken', result.data.data.token);
+					uni.setStorageSync('token', result.data.data.token);
 					uni.setStorageSync('uid', result.data.data.user_id);
 					uni.setStorageSync('phone', result.data.data.phone);
+					uni.setStorageSync('balance', result.data.data.money);
+					uni.setStorageSync('referee_code', result.data.data.referee_code);
 					setTimeout(()=>{
 						uni.switchTab({
 							url:'/pages/home/index'

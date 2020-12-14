@@ -137,6 +137,7 @@
 			},
 			async save(){
 				let uid =uni.getStorageSync('uid');
+				let token =uni.getStorageSync('token');
 				const { bank_id,back_num,name,address,code } =this
 				
 				if(!bank_id){
@@ -163,7 +164,7 @@
 				
 				let params={
 					url:"/api/user/BindBankCard",
-					data:{uid,bank_id,back_num,name,address,code}
+					data:{token,uid,bank_id,back_num,name,address,code}
 				}
 				
 				const result=await this.$http(params);
@@ -171,7 +172,7 @@
 					this.showToast("添加成功")
 					this.isSave=false;
 					setTimeout(()=>{
-						nui.navigateBack()
+						uni.navigateBack()
 					},800)
 				}else{
 					this.showToast(result.data.message);

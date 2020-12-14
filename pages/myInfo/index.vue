@@ -19,7 +19,7 @@
 			</view>
 			
 			<view class="share-block">
-				<view class="share-item">
+				<view class="share-item" @click="share">
 					<text>推广分享</text>
 				</view>
 				<view class="manger-item" @click="skipPage('../message/index')">
@@ -42,7 +42,8 @@
 	export default {
 		data() {
 			return {
-				balance:"95842400.00",
+				balance:"",
+				referee_code:"",
 				menuList:[
 					{
 						name:'银行卡',
@@ -74,14 +75,34 @@
 		methods: {
 			skipPage(url){
 				if(url==='../login/index'){
-					uni.removeStorageSync('appToken');
+					uni.removeStorageSync('token');
 					uni.removeStorageSync('uid');
 					uni.removeStorageSync('phone');
 				}
 				uni.navigateTo({
 					url
 				})
+			},
+			share(){
+				const { referee_code }=this;
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSceneSession",
+				    summary: "邀请好友一起推广吧",
+					href:`http://mitoo.zbyj.top/report/regist.html?referee_code=${referee_code}`,
+					imageUrl:"../../static/images/my_share.png",
+				    success: (res)=> {
+				        this.showToast('分享成功');
+				    },
+				    fail: (err)=> {
+				        this.showToast(JSON.stringify(err));
+				    }
+				});
 			}
+		},
+		created(){
+			this.balance=uni.getStorageSync('balance');
+			this.referee_code=uni.getStorageSync('referee_code');
 		}
 	}
 </script>
