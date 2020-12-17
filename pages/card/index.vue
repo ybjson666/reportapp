@@ -79,9 +79,10 @@
 </script>
 
 <style lang="scss" scoped>
-	@import '../../static/scss/common.scss';
 	.card-container{
-		height: 100%;
+		min-height: 100%;
+		padding-bottom: 100rpx;
+		box-sizing: border-box;
 		position: relative;
 		background: #EAEEFC;
 		.card-header{
@@ -107,7 +108,7 @@
 			left: 0;
 			z-index: 10;
 			padding: 0 60rpx;
-			padding-top: 310rpx;
+			padding-top: 350rpx;
 			box-sizing: border-box;
 			.card-block{
 				.card-title{
@@ -151,13 +152,6 @@
 						background: #FEC4D6;
 					}
 				}
-			}
-		}
-	}
-	@media screen and (min-height: $minH+px) {
-		.card-container{
-			.card-content{
-				padding-top: 350rpx;
 			}
 		}
 	}

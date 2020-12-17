@@ -26,7 +26,7 @@
 				<view class="card-rows code-rows">
 					<text class="rows-label">绑定手机动态验证码：</text>
 					<input type="number" class="rows-input" v-model="code" 
-					@focus="focusEnv('code')" :class="{active:focusTxt==='code'}"/>
+					@focus="focusEnv('code')" :class="{active:focusTxt==='code'}" maxlength="6"/>
 					<button class="code-btn" :disabled="isUse" @click="getCode">{{codeTxt}}</button>
 				</view>
 				<view class="btn-rows">
@@ -188,7 +188,6 @@
 </script>
 
 <style lang="scss" scoped>
-	@import '../../static/scss/common.scss';
 	.card-container{
 		height: 100%;
 		position: relative;
@@ -216,7 +215,7 @@
 			left: 0;
 			z-index: 10;
 			padding: 0 60rpx;
-			padding-top: 310rpx;
+			padding-top: 350rpx;
 			box-sizing: border-box;
 			.card-block{
 				.card-rows{
@@ -225,7 +224,7 @@
 					.rows-label{
 						color: #707070;
 						font-size: 28rpx;
-						width: 280rpx;
+						width: 300rpx;
 					}
 					.rows-input{
 						flex: 1;
@@ -247,6 +246,8 @@
 						height: 60rpx;
 						right: 0;
 						top:0;
+						line-height: 60rpx;
+						padding: 0 !important;
 					}
 				}
 				.btn-rows{
@@ -258,11 +259,11 @@
 			}	
 		}
 	}
-	@media screen and (min-height: $minH+px) {
-		.card-container{
-			.card-content{
-				padding-top: 350rpx;
-			}
-		}
-	}
+	// @media screen and (min-height: $minH+px) {
+	// 	.card-container{
+	// 		.card-content{
+	// 			padding-top: 350rpx;
+	// 		}
+	// 	}
+	// }
 </style>

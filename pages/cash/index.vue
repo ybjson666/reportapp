@@ -4,7 +4,7 @@
 		<view class="back-btn" @click="goback"><image src="../../static/images/left.png"></image></view>
 		<view class="cash-content">
 			<view class="cash-content-top">
-				<text class="titles fl">千翻壹号</text>
+				<text class="titles fl">{{nickname}}</text>
 				<view class="fr">
 					<view class="circle"></view>
 					<text class="tags">提现</text>
@@ -105,6 +105,7 @@
 				pwd:"",
 				card_id:"",
 				cardList:[],
+				nickname:"",
 				rules:["1.提现审核一般情况下3个工作日内进行审核处理",
 				"2.如遇银行卡信息错误或其他预留可能会被拒绝提现",
 				"3.如遇不可能抗拒因素导致无法进行审核将在恢复后 最快的时间内进行处理",
@@ -266,7 +267,7 @@
 			this.$refs.loading.showLoading();
 			this.getBanks()
 		},
-		created(){
+		onLoad(){
 			let env=this.judgeEnviron();
 			if(env==='android'){
 				this.port='1';
@@ -274,12 +275,14 @@
 				this.port='2';
 			}
 			this.balance=uni.getStorageSync('balance');
+			this.nickname=uni.getStorageSync('nickname');
+			
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-	@import '../../static/scss/common.scss';
+	
 	
 	.cash-container{
 		min-height: 100%;
@@ -354,16 +357,16 @@
 			top: 50rpx;
 			left: 0;
 			z-index: 10;
-			padding-top: 320rpx;
+			padding-top: 340rpx;
 			box-sizing: border-box;
 			.cash-content-top{
-				line-height: 100rpx;
+				line-height: 140rpx;
 				margin-bottom: 20rpx;
-				height: 100rpx;
+				height: 140rpx;
 				padding: 0 60rpx;
 				box-sizing: border-box;
 				.titles{
-					font-size: 60rpx;
+					font-size: 68rpx;
 					color: #2F2F51;	
 				}
 				.tags{
@@ -381,7 +384,7 @@
 				}
 			}
 			.content-bottom{
-				height: calc(100% - 120rpx);
+				height: calc(100% - 160rpx);
 				background: #EAEEFC;
 				padding: 44rpx 68rpx 100rpx 68rpx;
 				box-sizing: border-box;
@@ -470,22 +473,4 @@
 			}
 		}
 	}
-	@media screen and (min-height: $minH+px) {
-		.cash-container{
-			.cash-content{
-				padding-top: 340rpx;
-				.cash-content-top{
-					line-height: 140rpx;
-					height: 140rpx;
-					.titles{
-						font-size: 68rpx;		
-					}
-				}
-				.content-bottom{
-					height: calc(100% - 160rpx);
-				}
-			}
-		}
-	}
-	
 </style>

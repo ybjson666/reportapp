@@ -48,7 +48,7 @@
 				let phone =uni.getStorageSync('phone');
 				this.isUse=true;
 				let params={
-					url:'/web/api/other/SmsSend',
+					url:'/api/other/SmsSend',
 					data:{
 						phone
 					}
@@ -147,7 +147,7 @@
 			left: 0;
 			z-index: 10;
 			padding: 0 60rpx;
-			padding-top: 310rpx;
+			padding-top: 350rpx;
 			box-sizing: border-box;
 			.form-block{
 				margin-bottom: 160rpx;
@@ -155,7 +155,7 @@
 					display: flex;
 					margin-bottom: 40rpx;
 					.rows-label{
-						width: 280rpx;
+						width: 300rpx;
 						font-size: 28rpx;
 						color: #707070;
 					}
@@ -176,7 +176,9 @@
 						line-height: 60rpx;
 						border-radius: 10rpx;
 						right: 0;
-						top:0
+						top:0;
+						line-height: 60rpx;
+						padding: 0 !important;
 					}
 				}
 				.code-rows{
@@ -185,13 +187,6 @@
 			}
 			.button{
 				font-size: 38rpx;
-			}
-		}
-	}
-	@media screen and (min-height:$minH+px) {
-		.pwd-container{
-			.pwd-content{
-				padding-top: 350rpx;
 			}
 		}
 	}

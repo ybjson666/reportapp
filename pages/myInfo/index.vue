@@ -2,7 +2,7 @@
 	<view class="myinfo-container">
 		<view class="myinfo-content">
 			<view class="info-header">
-				<text class="fl title">千翻壹号</text>
+				<text class="fl title">{{nickname}}</text>
 				<view class="cash-block fr">
 					<view class="cicle"></view>
 					<text>提现</text>
@@ -10,7 +10,7 @@
 				<view class="cl"></view>
 			</view>
 			
-			<view class="balance-block">
+			<view class="balance-block" @click="skipPage('../income/index')">
 				<view class="balance-header">
 					<view class="balance-icon"><image src="../../static/images/balance.png"></image></view>
 					<text>Balance / 余额</text>
@@ -43,7 +43,9 @@
 		data() {
 			return {
 				balance:"",
-				referee_code:"",
+				nickname:"",
+				share_code:"",
+				shareUrl:"",
 				menuList:[
 					{
 						name:'银行卡',
@@ -62,10 +64,6 @@
 						path:'../service/index'
 					},
 					{
-						name:'基础设置',
-						path:'../setting/index'
-					},
-					{
 						name:'退出登录',
 						path:'../login/index'
 					}
@@ -78,18 +76,28 @@
 					uni.removeStorageSync('token');
 					uni.removeStorageSync('uid');
 					uni.removeStorageSync('phone');
+					uni.removeStorageSync('nickname');
+					uni.removeStorageSync('referee_code');
+					uni.removeStorageSync('balance');
+				}else if(url==='../service/index'){
+					uni.makePhoneCall({
+						phoneNumber:'18398601882'
+					})
+					return false;
 				}
 				uni.navigateTo({
 					url
 				})
+				
 			},
 			share(){
-				const { referee_code }=this;
+				const { referee_code,shareUrl }=this;
 				uni.share({
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    summary: "邀请好友一起推广吧",
-					href:`http://mitoo.zbyj.top/report/regist.html?referee_code=${referee_code}`,
+					share:shareUrl,
+					// href:`http://mitoo.zbyj.top/report/regist.html?referee_code=${referee_code}`,
 					imageUrl:"../../static/images/my_share.png",
 				    success: (res)=> {
 				        this.showToast('分享成功');
@@ -98,23 +106,41 @@
 				        this.showToast(JSON.stringify(err));
 				    }
 				});
+			},
+			async getShareParams(){
+				let token=uni.getStorageSync('token')
+				let uid=uni.getStorageSync('uid')
+				let params={
+					url:'/api/user/UserShare',
+					data:{token,uid}
+				}
+				const result=await this.$http(params);
+				if(result.data.code===200){
+					this.shareUrl=`http://${result.data.data.referee_url}`;
+					this.share_code=result.data.data.share_code;
+				}else{
+					this.showToast(result.data.message)
+				}
 			}
 		},
-		created(){
+		onLoad(){
 			this.balance=uni.getStorageSync('balance');
+			this.nickname=uni.getStorageSync('nickname');
 			this.referee_code=uni.getStorageSync('referee_code');
+		},
+		created(){
+			this.getShareParams()
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-@import '../../static/scss/common.scss';
 .myinfo-container{
 	height: 100%;
 	background-image: url('../../static/images/info_bg.png');
 	background-repeat: no-repeat;
 	background-size: 100%;
-	padding-top: 360rpx;
+	padding-top: 390rpx;
 	box-sizing: border-box;
 	.myinfo-content{
 		padding: 0 32rpx;
@@ -126,7 +152,7 @@
 			height: 90rpx;
 			line-height: 90rpx;
 			.title{
-				font-size: 56rpx;
+				font-size: 68rpx;
 				color: #2F2F51;
 			}
 			.cash-block{
@@ -146,7 +172,7 @@
 			}
 		}
 		.balance-block{
-			margin-top: 30rpx;
+			margin-top: 40rpx;
 			padding: 0 20rpx;
 			box-sizing: border-box;
 			.balance-header{
@@ -164,7 +190,7 @@
 			}
 			
 			.balance-val{
-				font-size: 48rpx;
+				font-size: 56rpx;
 				color: #2F2F51;
 				margin-top: 24rpx;
 			}
@@ -172,7 +198,7 @@
 		
 		.share-block{
 			display: flex;
-			margin-top: 48rpx;
+			margin-top: 56rpx;
 			view{
 				width: 328rpx;
 				height: 198rpx;
@@ -219,23 +245,4 @@
 		}
 	}
 }
-@media screen and (min-height: $minH+px) {
-		.myinfo-container{
-			padding-top: 390rpx;
-		}
-		.info-header{
-			.title{
-				font-size: 68rpx;
-			}
-		}
-		.balance-block{
-			margin-top: 40rpx;
-			.balance-val{
-				font-size: 56rpx;
-			}
-		}
-		.share-block{
-			margin-top: 56rpx;
-		}
-	}
 </style>

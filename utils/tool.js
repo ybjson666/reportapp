@@ -15,6 +15,35 @@ export const formatTime=(dateArr)=>{
     return `${year}-${month}-${day}  ${hour}:${min}:${sec}`;
 }
 
+export const formatTimeStr=(str)=> {
+	if(!str){
+        return;
+    }
+    var time = new Date(str*1000);
+    var month = time.getMonth() + 1;
+    var strDate = time.getDate();
+    var hour=time.getHours();
+    var min=time.getMinutes();
+    var sec=time.getSeconds();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    if (hour >= 0 && hour <= 9) {
+        hour = "0" + hour;
+    }
+    if (min >= 0 && min <= 9) {
+        min = "0" + min;
+    }
+    if (sec >= 0 && sec <= 9) {
+        sec = "0" + sec;
+    }
+    //获取日期对象 time 的年、月、日，并拼接为字符串 yyyy-mm-dd ,再返回
+    return time.getFullYear() + "." + month + "." + strDate + "\xa0"+hour+":"+min;
+}
+
 export const tranStamp=(dateStr)=>{//将日期字符串转为时间戳
     let dateTmp = dateStr.replace(/-/g,'/')   //为了兼容IOS，需先将字符串转换为'2018/9/11 9:11:23'
     return Date.parse(dateTmp)                 //返回'2018-9-12 9:11:23'的时间戳

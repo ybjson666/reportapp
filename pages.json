@@ -36,7 +36,6 @@
 				"navigationBarTitleText": "找回密码"
 			}
 		},
-		
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -115,6 +114,49 @@
 			"path": "pages/orderInfo/index",
 			"style":{
 				"navigationBarTitleText": "订单详情"
+			}
+		},
+		{
+			"path": "pages/pay/index",
+			"style":{
+				"navigationBarTitleText": "支付"
+			}
+		},
+		{
+			"path": "pages/team/index",
+			"style":{
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/teamSecond/index",
+			"style":{
+				"navigationBarTitleText": "团队详情"
+			}
+		},
+		{
+			"path": "pages/teamInfo/index",
+			"style":{
+				"navigationBarTitleText": "区域详情",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/income/index",
+			"style":{
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/newsInfo/index",
+			"style":{
+				"navigationBarTitleText": "新闻详情"
+			}
+		},
+		{
+			"path": "pages/coupe/index",
+			"style":{
+				"navigationBarTitleText": "意见反馈"
 			}
 		}
     ],

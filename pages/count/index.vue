@@ -2,8 +2,10 @@
 	<view class="count-container">
 		<view class="achieve-item">
 			<view class="item-top">
-				<view class="rect fl"><image src="../../static/images/blue_rect.png"></image></view>
-				<text class="top-tags fl">我的业绩</text>
+				<view class="top-left fl">
+					<view class="rect"><image src="../../static/images/blue_rect.png"></image></view>
+					<text class="top-tags">我的业绩</text>
+				</view>
 				<view class="top-right fr">
 					<text class="top-right-tags">My performance</text>
 					<view class="right-icon" @click="skipPage('../myCount/index')"><image src="../../static/images/go.png"></image></view>
@@ -42,8 +44,10 @@
 		
 		<view class="achieve-item area-achieve-item">
 			<view class="item-top">
-				<view class="rect fl"><image src="../../static/images/red_blue.png"></image></view>
-				<text class="top-tags fl">区域业绩</text>
+				<view class="top-left fl">
+					<view class="rect"><image src="../../static/images/red_blue.png"></image></view>
+					<text class="top-tags">区域业绩</text>
+				</view>
 				<view class="top-right fr">
 					<text class="top-right-tags">Regional performance</text>
 					<view class="right-icon"><image src="../../static/images/go.png"></image></view>
@@ -109,21 +113,23 @@
 
 <style lang="scss" scoped>
 	.count-container{
-		height: 100%;
-		padding: 80rpx 60rpx 0 60rpx;
+		min-height: 100%;
+		padding: 80rpx 60rpx 60rpx 60rpx;
 		box-sizing: border-box;
 		.achieve-item{
 			.item-top{
 				.rect{
-					width: 6rpx;
-					height: 30rpx;
+					width: 8rpx;
+					height: 36rpx;
 					margin-right: 16rpx;
-					margin-top: 4rpx;
+					display: inline-block;
+					vertical-align: top;
 				}
 				.top-tags{
 					line-height: 34rpx;
 					font-size: #2F2F51;
 					font-size: 34rpx;
+					vertical-align: top;
 				}
 				.right-icon{
 					width: 32rpx;
@@ -206,6 +212,5 @@
 		.area-achieve-item{
 			margin-top: 84rpx;
 		}
-		
 	}
 </style>

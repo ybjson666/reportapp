@@ -85,6 +85,7 @@
 					uni.setStorageSync('uid', result.data.data.user_id);
 					uni.setStorageSync('phone', result.data.data.phone);
 					uni.setStorageSync('balance', result.data.data.money);
+					uni.setStorageSync('nickname', result.data.data.nickname);
 					uni.setStorageSync('referee_code', result.data.data.referee_code);
 					setTimeout(()=>{
 						uni.switchTab({
@@ -100,13 +101,12 @@
 				uni.getProvider({
 				    service: 'oauth',
 				    success: (res)=> {
-				        console.log(res.provider);
 				        //支持微信、qq和微博等
 				        if (~res.provider.indexOf('weixin')) {
 				            uni.login({
 				              provider: 'weixin',
 				              success: (loginRes)=> {
-				  				console.log("App微信获取用户信息成功",loginRes);
+				  				console.log(loginRes)
 				              },
 				              fail:(res)=>{
 				              	console.log("App微信获取用户信息失败",res);
@@ -122,25 +122,23 @@
 </script>
 
 <style lang="scss" scoped>
-	@import '../../static/scss/common.scss';
-	
 	.login-container{
 		background-color: #fff;
 		background-image: url("../../static/images/bg_login.png");
 		background-repeat: no-repeat;
 		background-size: contain;
 		min-height: 100%;
-		padding-top: 100rpx;
+		padding-top: 160rpx;
 		box-sizing: border-box;
 		position: relative;
-		padding-bottom: 100rpx;
+		padding-bottom: 200rpx;
 		.tip{
 			width: 252rpx;
 			height: 82rpx;
 			position: absolute;
 			left: 50%;
 			margin-left: -126rpx;
-			top:34rpx;
+			top:80rpx;
 		}
 		.login-section{
 			background: rgba(246,247,253,.6);
@@ -245,7 +243,7 @@
 		.wx-login-block{
 			width: 150rpx;
 			margin: 0 auto;
-			margin-top: 40rpx;
+			margin-top: 160rpx;
 			.wx-logo{
 				width: 68rpx;
 				height: 68rpx;
@@ -257,20 +255,6 @@
 				color: #666;
 			}
 			
-		}
-	}
-	@media screen and (min-height: $minH+px) {
-		.login-container{
-			padding-top: 200rpx;
-			.tip{
-				top:130rpx;
-			}
-			.wx-login-block{
-				margin-top: 120rpx;
-				.wx-logo{
-					margin-bottom: 36rpx;
-				}
-			}
 		}
 	}
 </style>

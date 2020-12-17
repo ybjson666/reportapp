@@ -1,50 +1,42 @@
 <template>
 	<view class="report-container">
 		<view class="banners">
-			<swiper class="swiper" :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval" :duration="duration">
-				<swiper-item v-for="(item,index) in swiperList" :key="index">
-					<view class="swiper-wraps">
-						<view class="swiper-pic"><image :src="item.device_img"></image></view>
-					</view>
-				</swiper-item>
-			</swiper>
+			<image :src="device.pic"></image>
 		</view>
 		<view class="device-block">
 			<view class="device-list">
 				<view class="device-item">
 					<view class="device-pic"><image :src="device.pic"></image></view>
 					<view class="device-info">
-						<view class="device-name">{{device.name}}</view>
+						<view class="device-name">{{device.cate_name}}</view>
 						<view class="device-price">￥{{device.price}}</view>
 					</view>
 					<view class="device-num-block">
 						<view class="add-btn" @click="addNum">+</view>
-						<view class="device-num" v-show="device_nums>0">{{device_nums}}</view>
-						<view class="reduce-btn" v-show="device_nums>0" @click="reduceNum">-</view>
+						<view class="device-num" v-show="num>0">{{num}}</view>
+						<view class="reduce-btn" v-show="num>0" @click="reduceNum">-</view>
 					</view>
 				</view>
 			</view>
 		</view>
-		<view class="btn-block"><button class="button" @click="submitOrder">提交订单</button></view>
+		<view class="btn-block"><button class="button" @click="submitOrder" :disabled="isUse">提交订单</button></view>
+		<wyb-loading ref="loading"/>
 	</view>
 </template>
 
 <script>
+	import wybLoading from '@/components/wyb-loading/wyb-loading.vue'
 	export default{
 		data(){
 			return{
-				swiperList:[],
-				indicatorDots: true,
-				autoplay: true,
-				interval: 2000,
-				duration: 500,
-				device:{
-					name:"贩卖机&产品",
-					price:"180",
-					pic:"../../static/images/goods.png"
-				},
-				device_nums:0
+				device:{},
+				num:0,
+				isUse:false,
+				cate_id:""
 			}
+		},
+		components:{
+			wybLoading
 		},
 		methods:{
 			async getDatas(){
@@ -59,32 +51,60 @@
 				}
 				const result=await this.$http(params);
 				if(result.data.code===200){
-					this.swiperList=result.data.data.devecie_list;
+					this.device=result.data.data;
+					this.cate_id=result.data.data.dcata_id;
+					this.$refs.loading.hideLoading();
 				}else{
+					this.$refs.loading.hideLoading();
 					this.showToast(result.data.message);
 				}
 				
 			},
 			addNum(){
-				this.device_nums++;
+				this.num++;
 			},
 			reduceNum(){
-				this.device_nums--;
+				this.num--;
 			},
-			submitOrder(){
-				if(!this.device_nums){
+			async submitOrder(){
+				const { num,cate_id }=this
+				let token=uni.getStorageSync('token')
+				let uid=uni.getStorageSync('uid')
+				
+				if(!this.num){
 					this.showToast('请添加订单数量')
 					return;
 				}
 				
-				uni.navigateTo({
-					url:'../orderInfo/index'
+				let params={
+					url:'/api/work/order',
+					data:{uid,token,num,cate_id}
+				}
+				
+				let result=await this.$http(params);
+				if(result.data.code===200){
+					this.showToast('下单成功')
+					setTimeout(()=>{
+						uni.navigateTo({
+							url:`../orderInfo/index?order_id=${result.data.data.order_id}`
+						})
+					},1000)
+				}
+			},
+			back(){
+				uni.switchTab({
+					url:'/pages/market/index'
 				})
 			}
 		},
-		created(){
+		mounted(){
+			this.$refs.loading.showLoading();
 			this.getDatas()
-		}
+		},
+		onBackPress() {
+		    this.back();
+		    return true;
+		},
 	}
 </script>
 
@@ -95,22 +115,11 @@
 		box-sizing: border-box;
 		position: relative;
 		.banners{
-			.swiper{
-				height: 416rpx;
-				box-shadow: 0px 16rpx 28rpx rgba(111, 143, 234, 0.13);
-				border-radius: 32rpx;
-				swiper-item {
-					height: 416rpx;
-					.swiper-wraps{
-						height: 100%;
-						overflow: hidden;
-						border-radius: 32rpx;
-						.swiper-pic{
-							height: 100%;
-						}
-					}
-				}
-			}
+			height: 416rpx;
+			box-shadow: 0px 16rpx 28rpx rgba(111, 143, 234, 0.13);
+			border-radius: 32rpx;
+			width: 100%;
+			overflow: hidden;
 		}
 		.device-block{
 			margin-top: 90rpx;

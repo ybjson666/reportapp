@@ -58,4 +58,10 @@
 	.uni-table{
 		min-width: 200px!important;
 	}
+	.uni-progress-bar{
+		border-radius: 18rpx;
+	}
+	.uni-progress-inner-bar{
+		border-radius: 18rpx;
+	}
 </style>

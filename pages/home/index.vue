@@ -1,7 +1,7 @@
 <template>
 	<view class="home-container">
 		<view class="goods-list">
-			<view class="goods-item" v-for="(item,index) in goodList" :key="index">
+			<view class="goods-item" v-for="(item,index) in goodList" :key="index" @click="seekInfo(item.news_id)">
 				<view class="goods-name">{{item.title}}</view>
 				<view class="goods-desc">{{item.info}}</view>
 				<view class="goods-pic"><image :src="item.pic"></image></view>
@@ -41,7 +41,7 @@
 				const result=await this.$http(params);
 				if(result.data.code===200){
 					let list=result.data.data.data;
-					this.$refs.loading.hideLoading();
+					// this.$refs.loading.hideLoading();
 					this.page++
 					//this.shouldLoad=result.data.data.data.length>=result.data.dataper_page;//判断是否加载下一页，如果请求的数据的条数大于等于每页的条数就可以加载下一页，否则就不加载下一页
 					if(type==='fresh'){
@@ -52,15 +52,20 @@
 					}
 				}else if(result.data.code===204){
 					this.loadStatus='noMore'
-					this.$refs.loading.hideLoading();
+					// this.$refs.loading.hideLoading();
 				}else{
-					this.$refs.loading.hideLoading();
+					// this.$refs.loading.hideLoading();
 					this.showToast(result.data.message);
 				}
+			},
+			seekInfo(news_id){
+				uni.navigateTo({
+					url:`../newsInfo/index?news_id=${news_id}`
+				})
 			}
 		},
 		mounted(){
-			this.$refs.loading.showLoading();
+			// this.$refs.loading.showLoading();
 			this.getList('fresh');
 		},
 		onPullDownRefresh() {

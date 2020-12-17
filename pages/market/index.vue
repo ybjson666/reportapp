@@ -8,7 +8,7 @@
 				<view class="right-icon fr"><image src="../../static/images/right.png"></image></view>
 				<view class="cl"></view>
 			</view>
-			<view class="menu-item" @click="skipPage('../count/index')">
+			<view class="menu-item" @click="skipPage('../team/index')">
 				<view class="menu-icon fl"><image src="../../static/images/files.png" mode=""></image></view>
 				<text class="fl">业绩统计</text>
 				<view class="right-icon fr"><image src="../../static/images/right.png"></image></view>
