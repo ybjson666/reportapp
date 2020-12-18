@@ -13,8 +13,7 @@
 		{
 		    "path" : "pages/home/index",
 		    "style" :                                                                                    
-		    {
-		        "navigationStyle": "custom",
+		    {	"navigationBarTitleText": "新闻资讯",
 		        "enablePullDownRefresh": true,
 				"onReachBottomDistance":20
 		    }
@@ -157,6 +156,34 @@
 			"path": "pages/coupe/index",
 			"style":{
 				"navigationBarTitleText": "意见反馈"
+			}
+		},
+		{
+			"path": "pages/share/index",
+			"style":{
+				"navigationBarTitleText": "推广分享"
+			}
+		},
+		{
+			"path": "pages/payFail/index",
+			"style":{
+				"navigationBarTitleText": "支付失败",
+				"app-plus": {
+				    "titleNView":{
+						"autoBackButton":false
+					} 
+				}
+			}
+		},
+		{
+			"path": "pages/paySucc/index",
+			"style":{
+				"navigationBarTitleText": "支付成功",
+				"app-plus": {
+				    "titleNView":{
+						"autoBackButton":false
+					} 
+				}
 			}
 		}
     ],

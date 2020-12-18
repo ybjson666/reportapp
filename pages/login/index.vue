@@ -231,6 +231,9 @@
 				.login-btn{
 					margin-top: 60rpx;
 				}
+				uni-button:after{
+					border: none;
+				}
 				.forget-rows{
 					text-align: right;
 					margin-top: 40rpx;

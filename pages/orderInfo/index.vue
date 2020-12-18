@@ -51,14 +51,14 @@
 				</view>
 			</view>
 		</uni-transition>
-		<wyb-loading ref="loading"/>
+		<!-- <wyb-loading ref="loading"/> -->
 	</view>
 </template>
 
 <script>
 	import uniTransition from '@/components/uni-transition/uni-transition.vue'
 	import { maskStyle,formatTimeStr }  from '../../utils/tool.js'
-	import wybLoading from '@/components/wyb-loading/wyb-loading.vue'
+	// import wybLoading from '@/components/wyb-loading/wyb-loading.vue'
 	export default{
 		data(){
 			return{
@@ -85,12 +85,13 @@
 				curIndex:null,
 				orderInfo:{},
 				order_id:"",
-				isUse:false
+				isUse:false,
+				payorder:{}
 			}
 		},
 		components:{
 			uniTransition,
-			wybLoading
+			// wybLoading
 		},
 		onLoad(options){
 			this.order_id=options.order_id;
@@ -114,8 +115,8 @@
 				const { payTypes,orderInfo }=this;
 				
 				if(payTypes==='3'){
-					const {order_num,total_money,order_id}=orderInfo;
-					const payOrder={order_num,total_money,order_id,payTypes};
+					const {order_num,total_money,order_id,addtime}=orderInfo;
+					const payOrder={order_num,total_money,order_id,payTypes,addtime};
 					uni.navigateTo({
 						url:`../pay/index?orderInfo=${JSON.stringify(payOrder)}`
 					})
@@ -138,7 +139,7 @@
 				 const result=await this.$http(params);
 				 if(result.data.code===200){
 					 if(payTypes==='1'){
-						this.orderInfo=result.data.data.alipay;
+						this.payorder=result.data.data.alipay;
 					 }
 					 this.pay();
 				 }else{
@@ -148,15 +149,15 @@
 				
 			},
 			pay(){
-				const {payTypes,orderInfo}=this;
+				const {payTypes,payorder,orderInfo}=this;
 				uni.requestPayment({
 				    provider: payTypes=='2'?'wxpay':'alipay',
-				    orderInfo: orderInfo, //微信、支付宝订单数据
+				    orderInfo: payorder, //微信、支付宝订单数据
 				    success: (res) =>{
 						this.isUse=false
 				        setTimeout(()=>{
 							uni.navigateTo({
-								url:'../report/index'
+								url:`../paySucc/index?addtime=${orderInfo.addtime}`
 							})
 						},500)
 				    },
@@ -164,7 +165,7 @@
 						this.isUse=false
 				        setTimeout(()=>{
 				        	uni.navigateTo({
-				        		url:'../report/index'
+				        		url:`../payFail/index?payTypes=${payTypes}&order_id=${orderInfo.order_id}`
 				        	})
 				        },500)
 				    }
@@ -182,15 +183,15 @@
 				let result=await this.$http(params);
 				if(result.data.code===200){
 					this.orderInfo=result.data.data;
-					this.$refs.loading.hideLoading();
+					// this.$refs.loading.hideLoading();
 				}else{
-					this.$refs.loading.hideLoading();
+					// this.$refs.loading.hideLoading();
 					this.showToast(result.data.message);
 				}
 			}
 		},
-		mounted(){
-			this.$refs.loading.showLoading();
+		created(){
+			// this.$refs.loading.showLoading();
 			this.getOrderInfo()
 		}
 	}

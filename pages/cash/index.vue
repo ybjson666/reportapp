@@ -57,7 +57,6 @@
 			</view>
 		</view>
 		<lb-picker ref="picker" :list="cardList" @confirm="confirm"></lb-picker>
-		<wyb-loading ref="loading"/>
 		<uni-transition :mode-class="modelClass" :show="showError" :styles="maskClass">
 			<view class="erro-model">
 				<view class="error-top">
@@ -94,7 +93,6 @@
 
 <script>
 	import LbPicker from '@/components/lb-picker'
-	import wybLoading from '@/components/wyb-loading/wyb-loading.vue'
 	import uniTransition from '@/components/uni-transition/uni-transition.vue'
 	import { maskStyle }  from '../../utils/tool.js'
 	export default{
@@ -122,7 +120,6 @@
 		},
 		components:{
 			LbPicker,
-			wybLoading,
 			uniTransition
 		},
 		computed:{
@@ -201,7 +198,6 @@
 				const result=await this.$http(params);
 				if(result.data.code===200){
 					let arr=result.data.data;
-					this.$refs.loading.hideLoading();
 					this.cardList=arr.map((item)=>{
 						return {
 							label:item.bank_name,
@@ -209,7 +205,6 @@
 						}
 					})
 				}else{
-					this.$refs.loading.hideLoading();
 					this.showToast(result.data.message);
 				}
 			},
@@ -263,8 +258,7 @@
 				}
 			}
 		},
-		mounted(){
-			this.$refs.loading.showLoading();
+		created(){
 			this.getBanks()
 		},
 		onLoad(){
@@ -276,7 +270,6 @@
 			}
 			this.balance=uni.getStorageSync('balance');
 			this.nickname=uni.getStorageSync('nickname');
-			
 		}
 	}
 </script>

@@ -20,12 +20,10 @@
 			</view>
 		</view>
 		<view class="btn-block"><button class="button" @click="submitOrder" :disabled="isUse">提交订单</button></view>
-		<wyb-loading ref="loading"/>
 	</view>
 </template>
 
 <script>
-	import wybLoading from '@/components/wyb-loading/wyb-loading.vue'
 	export default{
 		data(){
 			return{
@@ -34,9 +32,6 @@
 				isUse:false,
 				cate_id:""
 			}
-		},
-		components:{
-			wybLoading
 		},
 		methods:{
 			async getDatas(){
@@ -53,9 +48,7 @@
 				if(result.data.code===200){
 					this.device=result.data.data;
 					this.cate_id=result.data.data.dcata_id;
-					this.$refs.loading.hideLoading();
 				}else{
-					this.$refs.loading.hideLoading();
 					this.showToast(result.data.message);
 				}
 				
@@ -97,14 +90,13 @@
 				})
 			}
 		},
-		mounted(){
-			this.$refs.loading.showLoading();
+		created(){
 			this.getDatas()
 		},
 		onBackPress() {
 		    this.back();
 		    return true;
-		},
+		}
 	}
 </script>
 

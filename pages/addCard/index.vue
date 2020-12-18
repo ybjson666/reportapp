@@ -6,7 +6,8 @@
 			<view class="card-block">
 				<view class="card-rows">
 					<text class="rows-label">银行卡所属行：</text>
-					<input type="text" class="rows-input" v-model="seleBank" disabled @click="openCardModal"/>
+					<input type="text" class="rows-input" v-model="seleBank" disabled @click="openCardModal"
+					placeholder="选择银行卡"/>
 				</view>
 				<view class="card-rows">
 					<text class="rows-label">请输入银行卡号：</text>
@@ -35,13 +36,11 @@
 			</view>
 		</view>
 		<lb-picker ref="picker" :list="cardList" @confirm="confirm"></lb-picker>
-		<wyb-loading ref="loading"/>
 	</view>
 </template>
 
 <script>
 	import LbPicker from '@/components/lb-picker'
-	import wybLoading from '@/components/wyb-loading/wyb-loading.vue'
 	import { reg_card } from '../../utils/regexs.js'
 	export default{
 		data(){
@@ -59,8 +58,7 @@
 			}
 		},
 		components:{
-			LbPicker,
-			wybLoading
+			LbPicker
 		},
 		computed:{
 			seleBank(){
@@ -85,7 +83,6 @@
 				const result=await this.$http(params);
 				if(result.data.code===200){
 					let arr=result.data.data;
-					this.$refs.loading.hideLoading();
 					this.cardList=arr.map((item)=>{
 						return {
 							label:item.bank_name,
@@ -93,7 +90,6 @@
 						}
 					})
 				}else{
-					this.$refs.loading.hideLoading();
 					this.showToast(result.data.message);
 				}
 			},
@@ -180,8 +176,7 @@
 				}
 			}
 		},
-		mounted(){
-			this.$refs.loading.showLoading();
+		created(){
 			this.getBanks()
 		}
 	}

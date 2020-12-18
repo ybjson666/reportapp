@@ -92,10 +92,13 @@
           <!-- 暂无数据 -->
           <view v-if="isEmpty && !loading"
             class="lb-picker-empty">
-            <slot name="empty">
+            <!-- <slot name="empty">
               <text class="lb-picker-empty-text"
                 :style="{ color: emptyColor }">{{ emptyText }}</text>
-            </slot>
+            </slot> -->
+			<slot name="empty">
+				<view class="empty-icon"></view>
+			</slot>
           </view>
 
           <!-- 单选 -->
@@ -389,4 +392,10 @@ export default {
 
 <style lang="scss" scoped>
 @import "./style/picker.scss";
+.empty-icon{
+	width: 80rpx;
+	height: 80rpx;
+	background:url('./image/loding_web.gif');
+	background-size: 100% 100%;
+}
 </style>

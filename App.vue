@@ -64,4 +64,7 @@
 	.uni-progress-inner-bar{
 		border-radius: 18rpx;
 	}
+	uni-button:after{
+		border: none;
+	}
 </style>

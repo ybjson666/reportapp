@@ -19,7 +19,7 @@
 			</view>
 			
 			<view class="share-block">
-				<view class="share-item" @click="share">
+				<view class="share-item" @click="skipPage('../share/index')">
 					<text>推广分享</text>
 				</view>
 				<view class="manger-item" @click="skipPage('../message/index')">
@@ -44,8 +44,6 @@
 			return {
 				balance:"",
 				nickname:"",
-				share_code:"",
-				shareUrl:"",
 				menuList:[
 					{
 						name:'银行卡',
@@ -89,47 +87,12 @@
 					url
 				})
 				
-			},
-			share(){
-				const { referee_code,shareUrl }=this;
-				uni.share({
-				    provider: "weixin",
-				    scene: "WXSceneSession",
-				    summary: "邀请好友一起推广吧",
-					share:shareUrl,
-					// href:`http://mitoo.zbyj.top/report/regist.html?referee_code=${referee_code}`,
-					imageUrl:"../../static/images/my_share.png",
-				    success: (res)=> {
-				        this.showToast('分享成功');
-				    },
-				    fail: (err)=> {
-				        this.showToast(JSON.stringify(err));
-				    }
-				});
-			},
-			async getShareParams(){
-				let token=uni.getStorageSync('token')
-				let uid=uni.getStorageSync('uid')
-				let params={
-					url:'/api/user/UserShare',
-					data:{token,uid}
-				}
-				const result=await this.$http(params);
-				if(result.data.code===200){
-					this.shareUrl=`http://${result.data.data.referee_url}`;
-					this.share_code=result.data.data.share_code;
-				}else{
-					this.showToast(result.data.message)
-				}
 			}
 		},
 		onLoad(){
 			this.balance=uni.getStorageSync('balance');
 			this.nickname=uni.getStorageSync('nickname');
 			this.referee_code=uni.getStorageSync('referee_code');
-		},
-		created(){
-			this.getShareParams()
 		}
 	}
 </script>

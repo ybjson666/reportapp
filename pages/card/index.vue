@@ -18,20 +18,15 @@
 				</view>
 			</view>
 		</view>
-		<wyb-loading ref="loading"/>
 	</view>
 </template>
 
 <script>
-	import wybLoading from '@/components/wyb-loading/wyb-loading.vue'
 	export default{
 		data(){
 			return{
 				cardList:[]
 			}
-		},
-		components:{
-			wybLoading
 		},
 		methods:{
 			goback(){
@@ -64,15 +59,12 @@
 				const result=await this.$http(params);
 				if(result.data.code===200){
 					this.cardList=result.data.data;
-					this.$refs.loading.hideLoading();
 				}else{
-					this.$refs.loading.hideLoading();
 					this.showToast(result.data.message);
 				}
 			}
 		},
-		mounted(){
-			this.$refs.loading.showLoading();
+		created(){
 			this.getCardList()
 		}
 	}

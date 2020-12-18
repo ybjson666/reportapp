@@ -44,7 +44,7 @@
 		},
 		methods:{
 			async goPay(){
-				const { total_money,payTypes,order_id }=this.order
+				const { total_money,payTypes,order_id,addtime }=this.order
 				const { balance,pwd }=this
 				const uid=uni.getStorageSync('uid');
 				const token=uni.getStorageSync('token');
@@ -68,12 +68,17 @@
 					 this.refreshUser();
 					 setTimeout(()=>{
 						 uni.navigateTo({
-						 	url:'../report/index'
+						 	url:`../paySucc/index?addtime=${addtime}`
 						 })
 					 },1000)
 				 }else{
 					 this.showToast(result.data.message);
 					 this.isUse=false;
+					 setTimeout(()=>{
+						uni.navigateTo({
+							url:`../report/index`
+						})
+					 },1000)
 				}
 			},
 			async refreshUser(){
