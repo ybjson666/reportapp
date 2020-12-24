@@ -89,6 +89,13 @@
 							value:item.bank_id
 						}
 					})
+				}else if(result.data.code===401){
+					this.showToast(result.data.message);
+					setTimeout(()=>{
+						uni.navigateTo({
+							url:'../login/index'
+						})
+					},800)
 				}else{
 					this.showToast(result.data.message);
 				}
@@ -115,6 +122,7 @@
 				if(result.data.code==200){
 					let sec=60
 					let str=""
+					this.showToast('发送成功')
 					let timer=setInterval(()=>{
 						sec--
 						str=sec+'s'

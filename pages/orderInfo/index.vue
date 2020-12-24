@@ -5,10 +5,10 @@
 			<view class="goods-pic"><image :src="orderInfo.device_pic"></image></view>
 		</view>
 		<view class="order-infos">
-			<view class="user-block">
+			<!-- <view class="user-block">
 				<view class="user-pic"><image :src="orderInfo.head_pic"></image></view>
 				<text class="user-nick">{{orderInfo.nickname}}</text>
-			</view>
+			</view> -->
 			<view class="device-name-rows"><text>{{orderInfo.device_name}}</text></view>
 			<view class="device-rows">
 				<text class="rows-label fl">数量</text>
@@ -142,7 +142,14 @@
 						this.payorder=result.data.data.alipay;
 					 }
 					 this.pay();
-				 }else{
+				 }else if(result.data.code===401){
+					this.showToast(result.data.message);
+					setTimeout(()=>{
+						uni.navigateTo({
+							url:'../login/index'
+						})
+					},800)
+				}else{
 					 this.showToast(result.data.message);
 					 this.isUse=false;
 				 }
@@ -184,6 +191,14 @@
 				if(result.data.code===200){
 					this.orderInfo=result.data.data;
 					// this.$refs.loading.hideLoading();
+				}else if(result.data.code===401){
+					this.showToast(result.data.message);
+					setTimeout(()=>{
+						uni.navigateTo({
+							url:'../login/index'
+						})
+					},800)
+					
 				}else{
 					// this.$refs.loading.hideLoading();
 					this.showToast(result.data.message);
@@ -198,9 +213,11 @@
 </script>
 
 <style lang="scss" scoped>
+	@import '../../static/common/common.scss';
+	
 	.order-container{
 		min-height: 100%;
-		padding: 38rpx 40rpx 60rpx 40rpx;
+		padding: 38rpx 40rpx 0rpx 40rpx;
 		box-sizing: border-box;
 		.banners{
 			height: 416rpx;
@@ -229,7 +246,7 @@
 			}
 		}
 		.order-infos{
-			margin-top: 40rpx;
+			margin-top: 24rpx;
 			padding: 44rpx 40rpx 48rpx 32rpx;
 			box-sizing: border-box;
 			background: #F9FAFC;
@@ -251,13 +268,13 @@
 				}
 			}
 			.device-name-rows{
-				font-size: 32rpx;
+				font-size: 30rpx;
 				line-height: 44rpx;
 				color: #2F2F51;
-				margin-bottom: 52rpx;
+				margin-bottom: 30rpx;
 			}
 			.device-rows{
-				margin-bottom: 64rpx;
+				margin-bottom: 40rpx;
 				color: #2F2F51;
 				font-size: 32rpx;
 			}
@@ -286,7 +303,7 @@
 			}
 		}
 		.btn-block{
-			margin-top: 130rpx;
+			margin-top: 60rpx;
 			.button{
 				font-size: 38rpx;
 			}
@@ -349,5 +366,28 @@
 	.noScorll{
 		height: 100%;
 		overflow: hidden;
+	}
+	
+	@media screen and (min-height: $screenH+'px') {
+		.order-container{
+			padding-bottom: 0;
+			.order-infos{
+				margin-top: 40rpx;
+				.device-name-rows{
+					margin-bottom: 30rpx;
+					font-size: 32rpx;
+					line-height: 60rpx;
+				}
+				.device-rows{
+					margin-bottom: 64rpx;
+				}
+				.last-rows{
+					margin-bottom: 0;
+				}
+			}
+			.btn-block{
+				margin-top: 160rpx;
+			}
+		}
 	}
 </style>

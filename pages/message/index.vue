@@ -20,7 +20,7 @@
 		</view>
 		
 		<!--无消息提示-->
-		<view class="no-message-block" v-show="!msgList.length">
+		<view class="no-message-block" v-show="isEmpty">
 			<view class="msg-icon"><image src="../../static/images/ic_msg.png"></image></view>
 			<view class="msg-txt">No information</view>
 			<view class="msg-txt sec-msg">暂无信息</view>
@@ -36,8 +36,9 @@
 			return{
 				msgList:[],
 				loadStatus:'',
-				isLoadMore:true,
-				page:1
+				isLoadMore:false,
+				page:1,
+				isEmpty:false
 			}
 		},
 		components:{
@@ -58,12 +59,19 @@
 					this.page++
 					if(type==='fresh'){
 						this.msgList=list;
+						if(!this.msgList.length){
+							this.isEmpty=true;
+						}
 						uni.stopPullDownRefresh();
 					}else{
 						this.msgList=this.msgList.concat(list);
 					}
 				}else if(result.data.code===204){
 					this.loadStatus='noMore'
+					if(type==='fresh'){
+						this.isEmpty=true;
+					}
+					uni.stopPullDownRefresh();
 				}else{
 					this.showToast(result.data.message);
 				}
@@ -108,6 +116,7 @@
 		},
 		onReachBottom(){
 			this.loadStatus='loading'
+			this.isLoadMore=true
 			setTimeout(()=>{
 				this.getMsgList('loadMore');
 			},500)

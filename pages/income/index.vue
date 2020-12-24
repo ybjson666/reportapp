@@ -17,15 +17,16 @@
 					<view class="money-tab"><text>金额</text></view>
 				</view>
 				<view class="income-show-block">
-					<s-pull-scroll ref="pullScroll" :back-top="true" :pullDown="pullDown" :pullUp="loadData">
+					<s-pull-scroll ref="pullScroll" :back-top="true" :pullDown="pullDown" :pullUp="loadData" v-if="incomeList.length">
 						<view class="income-list">
 							<view class="income-item" v-for="(item,index) in incomeList" :key="index">
-								<text class="item-time">{{item.add_time}}</text>
-								<text class="item-type">{{item.types}}</text>
-								<text class="item-money">{{item.nums}}</text>
+								<text class="item-time">{{item.addtime}}</text>
+								<text class="item-type">{{item.source_type}}</text>
+								<text class="item-money">{{item.op}}</text>
 							</view>
 						</view>
 					</s-pull-scroll>
+					<view v-show="!incomeList.length" class="none-data">暂无数据</view>
 				</view>
 			</view>
 		</view>
@@ -38,34 +39,8 @@
 		data(){
 			return{
 				balance:"",
-				list: [],
-				incomeList:[
-					{
-						add_time:'2012.10.15.18:22:23',
-						types:'团队销售奖',
-						nums:'+222'
-					},
-					{
-						add_time:'2012.10.15.18:22:23',
-						types:'团队销售奖',
-						nums:'+222'
-					},
-					{
-						add_time:'2012.10.15.18:22:23',
-						types:'团队销售奖',
-						nums:'+222'
-					},
-					{
-						add_time:'2012.10.15.18:22:23',
-						types:'团队销售奖',
-						nums:'+222'
-					},
-					{
-						add_time:'2012.10.15.18:22:23',
-						types:'团队销售奖',
-						nums:'+222'
-					}
-				]
+				page:1,
+				incomeList:[]
 			}
 		},
 		components:{
@@ -81,31 +56,53 @@
 			  });
 			},
 			pullDown (pullScroll) {
-			  setTimeout(() => {
-			    this.loadData(pullScroll);
-			  }, 200);
+			  this.page=1;
+			  this.getData('refresh',pullScroll)
 			},
 			loadData (pullScroll) {
-			  // setTimeout(() => {
-			  //   if (pullScroll.page == 1) {
-			  //     this.list = [];
-			  //   }
-			  //   const curList = [];
-			  //   for (let i = this.list.length; i < this.list.length + 20; i++) {
-			  //     curList.push(i);
-			  //   }
-			  //   this.list = this.list.concat(curList);
-			  //   if (this.list.length > 60) {
-			  //     // finish(boolean:是否显示finishText,默认显示)
-			  //     pullScroll.finish(this.list.length > 5);
-			  //   } else {
-			  //     pullScroll.success();
-			  //   }
-			  // }, 500);
+			  this.getData('load',pullScroll)
+			},
+			async getData(types,pullScroll){
+				const { page }=this;
+				const uid=uni.getStorageSync('uid')
+				const token=uni.getStorageSync('token')
+				
+				let params={
+					url:'/api/achieve/BonusLog',
+					data:{uid,token,page}
+				}
+				
+				let result=await this.$http(params);
+				if(result.data.code===200){
+					if(types==='refresh'){
+						this.incomeList=result.data.data.data;
+					}else{
+						this.incomeList=this.incomeList.concat(result.data.data.data);
+					}
+					this.page++;
+					setTimeout(()=>{
+						pullScroll&&pullScroll.success();
+					},500)
+				}else if(result.data.code===204){
+					setTimeout(()=>{
+						pullScroll.finish()
+					},500)
+				}else if(result.data.code===401){
+					this.showToast(result.data.message);
+					setTimeout(()=>{
+						uni.navigateTo({
+							url:'../login/index'
+						})
+					},800)
+				}else{
+					this.showToast(result.data.message);
+				}
+				
 			}
 		},
 		created(){
-			this.balance=uni.getStorageSync('balance');
+			this.getData('refresh');
+			this.refreshUser(this)
 		}
 	}
 </script>

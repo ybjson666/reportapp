@@ -11,23 +11,23 @@
 						<input class="uni-input" type="number" placeholder="请输入账号" v-model="phone" @focus="focusEnv('account')"/>
 					</view>
 				</view>
-				<view class="login-rows-block">
+			<!-- 	<view class="login-rows-block">
 					<view class="row-label">密码</view>
 					<view class="login-rows" :class="{activePwd:seleRows=='pwd'}">
 						<view class="row-icon pwd-icon"></view>
 						<input class="uni-input" type="password" placeholder="请输入密码" v-model="pwd" @focus="focusEnv('pwd')"/>
 					</view>
-				</view>
-				<view class="login-rows-block" v-show="isFail">
+				</view> -->
+				<view class="login-rows-block">
 					<view class="row-label">验证码</view>
 					<view class="login-rows very-rows" :class="{activeCode:seleRows=='code'}">
 						<view class="row-icon code-icon"></view>
-						<input class="uni-input" type="number" placeholder="请输入验证码" v-model="verycode" @focus="focusEnv('code')"/>
-						<view class="code-btn">1264</view>
+						<input class="uni-input" type="number" placeholder="请输入验证码" v-model="code" @focus="focusEnv('code')"/>
+						<button class="code-btn" :disabled="isUse" @click="getCode">{{codeTxt}}</button>
 					</view>
 				</view>
 				<button class="login-btn button" @click="login" :disabled="isLogin">登陆</button>
-				<view class="forget-rows"><text @click="goFindPwd">忘记密码?</text></view>
+				<!-- <view class="forget-rows"><text @click="goFindPwd">忘记密码?</text></view> -->
 			</view>
 		</view>
 		
@@ -39,16 +39,21 @@
 </template>
 
 <script>
+	import { reg_phone } from '../../utils/regexs.js'
 	export default{
 		data(){
 			return{
 				phone:"",
-				pwd:"",
-				verycode:"",
+				code:"",
 				seleRows:"",
 				isFail:false,
-				isLogin:false
+				isLogin:false,
+				codeTxt:"获取验证码",
+				isUse:false
 			}
+		},
+		onBackPress(){
+			return true
 		},
 		methods:{
 			focusEnv(type){
@@ -59,13 +64,50 @@
 				    url: '../findPwd/index'
 				});
 			},
+			async getCode(){
+				const { phone }=this;
+				if(!phone){
+					this.showToast('请输入手机号')
+					return false;
+				}else if(!reg_phone.test(phone)){
+					this.showToast('手机号格式错误')
+					return false;
+				}
+				this.isUse=true;
+				let params={
+					url:'/api/other/SmsSend',
+					data:{
+						phone
+					}
+				}
+				const result=await this.$http(params);
+				if(result.data.code==200){
+					let sec=60
+					let str=""
+					this.showToast('发送成功')
+					let timer=setInterval(()=>{
+						sec--
+						str=sec+'s'
+						if(sec<=0){
+							sec=60;
+							this.isUse=false;
+							str="再次获取";
+							clearInterval(timer);
+						}
+						this.codeTxt=str;
+					},1000);
+				}else{
+					this.isUse=false;
+					this.showToast(result.data.message);
+				}
+			},
 			async login(){
-				const {phone,pwd}=this;
+				const {phone,code}=this;
 				if(!phone){
 					this.showToast("请输入账号");
 					return;
-				}else if(!pwd){
-					this.showToast("请输入密码");
+				}else if(!code){
+					this.showToast("请输入验证码");
 					return;
 				}
 				this.isLogin=true;
@@ -73,7 +115,7 @@
 					url:'/api/user/UserLogin',
 					data:{
 						phone,
-						pwd
+						code
 					}
 				}
 				
@@ -84,9 +126,6 @@
 					uni.setStorageSync('token', result.data.data.token);
 					uni.setStorageSync('uid', result.data.data.user_id);
 					uni.setStorageSync('phone', result.data.data.phone);
-					uni.setStorageSync('balance', result.data.data.money);
-					uni.setStorageSync('nickname', result.data.data.nickname);
-					uni.setStorageSync('referee_code', result.data.data.referee_code);
 					setTimeout(()=>{
 						uni.switchTab({
 							url:'/pages/home/index'
@@ -122,6 +161,8 @@
 </script>
 
 <style lang="scss" scoped>
+	@import '../../static/common/common.scss';
+	
 	.login-container{
 		background-color: #fff;
 		background-image: url("../../static/images/bg_login.png");
@@ -131,7 +172,6 @@
 		padding-top: 160rpx;
 		box-sizing: border-box;
 		position: relative;
-		padding-bottom: 200rpx;
 		.tip{
 			width: 252rpx;
 			height: 82rpx;
@@ -258,6 +298,20 @@
 				color: #666;
 			}
 			
+		}
+	}
+	
+	@media screen and (min-height: $screenH+'px') {
+		
+		.login-container{
+			padding-top: 240rpx;
+			padding-bottom: 0;
+			.tip{
+				top:170rpx;
+			}
+			.wx-login-block{
+				margin-top: 160rpx;
+			}
 		}
 	}
 </style>

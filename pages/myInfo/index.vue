@@ -44,6 +44,7 @@
 			return {
 				balance:"",
 				nickname:"",
+				service_phone:"",
 				menuList:[
 					{
 						name:'银行卡',
@@ -74,48 +75,58 @@
 					uni.removeStorageSync('token');
 					uni.removeStorageSync('uid');
 					uni.removeStorageSync('phone');
-					uni.removeStorageSync('nickname');
-					uni.removeStorageSync('referee_code');
-					uni.removeStorageSync('balance');
 				}else if(url==='../service/index'){
 					uni.makePhoneCall({
-						phoneNumber:'18398601882'
+						phoneNumber:this.service_phone
 					})
 					return false;
 				}
 				uni.navigateTo({
 					url
 				})
-				
-			}
+			},
+			async getPhone(){
+				let params={
+					url:'/api/other/ServicePhone',
+					types:'GET'
+				}
+				const result =await this.$http(params)
+				if(result.data.code===200){
+					this.service_phone=result.data.data
+				}else{
+					this.showToast(result.data.message)
+				}
+			},
 		},
 		onLoad(){
-			this.balance=uni.getStorageSync('balance');
-			this.nickname=uni.getStorageSync('nickname');
-			this.referee_code=uni.getStorageSync('referee_code');
+			this.getPhone()
+		},
+		onShow(){
+			this.refreshUser(this)
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+@import '../../static/common/common.scss';
+
 .myinfo-container{
 	height: 100%;
 	background-image: url('../../static/images/info_bg.png');
 	background-repeat: no-repeat;
 	background-size: 100%;
-	padding-top: 390rpx;
+	padding-top: 340rpx;
 	box-sizing: border-box;
 	.myinfo-content{
 		padding: 0 32rpx;
-		padding-bottom: 130rpx;
 		box-sizing: border-box;
 		.info-header{
 			padding: 0 20rpx;
 			box-sizing: border-box;
-			height: 90rpx;
-			line-height: 90rpx;
+			height: 80rpx;
+			line-height: 80rpx;
 			.title{
-				font-size: 68rpx;
+				font-size: 50rpx;
 				color: #2F2F51;
 			}
 			.cash-block{
@@ -135,7 +146,7 @@
 			}
 		}
 		.balance-block{
-			margin-top: 40rpx;
+			margin-top: 30rpx;
 			padding: 0 20rpx;
 			box-sizing: border-box;
 			.balance-header{
@@ -161,10 +172,10 @@
 		
 		.share-block{
 			display: flex;
-			margin-top: 56rpx;
+			margin-top: 30rpx;
 			view{
 				width: 328rpx;
-				height: 198rpx;
+				height: 170rpx;
 				position: relative;
 				color: #fff;
 				font-size: 32rpx;
@@ -186,11 +197,11 @@
 		}
 		
 		.menu-list{
-			margin-top: 40rpx;
+			margin-top: 30rpx;
 			.menu-item{
 				margin-bottom: 12rpx;
-				height:100rpx;
-				line-height: 100rpx;
+				height:70rpx;
+				line-height: 70rpx;
 				border-bottom: 1px solid #eaeaea;
 				font-size: 28rpx;
 				color: #75758C;
@@ -206,6 +217,50 @@
 			background: #f9fbfe;
 			height: 24rpx;
 		}
+	}
+}
+
+@media screen and (min-height:$screenH+'px'){
+	.myinfo-container{
+		padding-top: 380rpx;
+		.myinfo-content{
+			padding-bottom: 0;
+			.info-header{
+				line-height: 80rpx;
+				height: 80rpx;
+				.title{
+					font-size: 50rpx;
+				}
+			}
+			.balance-block{
+				margin-top: 10rpx;
+			}
+			.balance-block{
+				.balance-val{
+					font-size: 48rpx;
+					margin-top: 20rpx;
+				}
+			}
+			.share-block{
+				margin-top: 30rpx;
+				.share-item{
+					height: 198rpx;
+				}
+				.manger-item{
+					height: 198rpx;
+				}
+			}
+			.menu-list{
+				margin-top: 40rpx;
+				.menu-item{
+					line-height: 100rpx;
+					height: 100rpx;
+					font-size: 26rpx;
+				}
+			}
+			
+		}
+		
 	}
 }
 </style>

@@ -12,6 +12,7 @@
 						<text class="card-user">用户名 {{item.real_name}}</text>
 					</view>
 				</view>
+				<view v-show="!cardList.length" class="none-data">您暂无银行卡</view>
 				<view class="btn-block">
 					<view class="add-btn card-btn" @click="skipPage('../addCard/index')">添加银行卡</view>
 					<view class="cash-btn card-btn" @click="skipPage('../cash/index')">前往提现</view>
@@ -59,6 +60,13 @@
 				const result=await this.$http(params);
 				if(result.data.code===200){
 					this.cardList=result.data.data;
+				}else if(result.data.code===401){
+					this.showToast(result.data.message);
+					setTimeout(()=>{
+						uni.navigateTo({
+							url:'../login/index'
+						})
+					},800)
 				}else{
 					this.showToast(result.data.message);
 				}

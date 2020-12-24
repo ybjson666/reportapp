@@ -67,4 +67,9 @@
 	uni-button:after{
 		border: none;
 	}
+	.none-data{
+		text-align: center;
+		color: #ccc;
+		margin-top: 30rpx;
+	}
 </style>

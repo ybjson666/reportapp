@@ -139,7 +139,7 @@
 <style lang="scss">
     .uni-table-scroll {
         width: 100%;
-        overflow-x: auto;
+        // overflow-x: auto;
     }
 
     .uni-table {
@@ -148,7 +148,6 @@
         display: table;
         box-sizing: border-box;
         border-radius: 5px;
-        box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.1);
         overflow-x: auto;
 		background-color: #fff;
         /deep/ .uni-table-tr:nth-child(n+2) {
@@ -163,7 +162,7 @@
     }
 
     .border-none {
-        border-bottom: none;
+        border: none;
     }
 
     .table--stripe {

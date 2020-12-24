@@ -52,7 +52,12 @@
 					}
 				}else if(result.data.code===204){
 					this.loadStatus='noMore'
+					uni.stopPullDownRefresh();
 					// this.$refs.loading.hideLoading();
+				}else if(result.data.code===401){
+					uni.navigateTo({
+						url:'../login/index'
+					})
 				}else{
 					// this.$refs.loading.hideLoading();
 					this.showToast(result.data.message);

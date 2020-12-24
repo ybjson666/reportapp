@@ -179,7 +179,7 @@
 					this.money=""
 					this.pwd=""
 					this.limitAgree=false
-					this.refreshUser();
+					this.refreshUser(this);
 				}else{
 					this.showToast(result.data.message)
 					this.isUse=false
@@ -196,6 +196,7 @@
 					}
 				}
 				const result=await this.$http(params);
+				this.showToast(result.data.code)
 				if(result.data.code===200){
 					let arr=result.data.data;
 					this.cardList=arr.map((item)=>{
@@ -204,6 +205,13 @@
 							value:item.bank_id
 						}
 					})
+				}else if(result.data.code===401){
+					this.showToast(result.data.message);
+					setTimeout(()=>{
+						uni.navigateTo({
+							url:'../login/index'
+						})
+					},800)
 				}else{
 					this.showToast(result.data.message);
 				}
@@ -240,43 +248,25 @@
 			    }else{
 			        return 'pc';
 			    }
-			},
-			async refreshUser(){
-				const uid=uni.getStorageSync('uid')
-				const token=uni.getStorageSync('token')
-				const { port }=this;
-				let params={
-					url:'/api/user/UserRefresh',
-					data:{port,app_version:'1.0',uid,token}
-				}
-				const result=await this.$http(params);
-				if(result.data.code===200){
-					this.balance=result.data.data.money;
-					uni.setStorageSync('balance',result.data.data.money)
-				}else{
-					this.showToast(result.data.message);
-				}
 			}
 		},
 		created(){
 			this.getBanks()
 		},
 		onLoad(){
+			this.refreshUser(this)
 			let env=this.judgeEnviron();
 			if(env==='android'){
 				this.port='1';
 			}else if(env==='ios'){
 				this.port='2';
 			}
-			this.balance=uni.getStorageSync('balance');
-			this.nickname=uni.getStorageSync('nickname');
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-	
-	
+	@import '../../static/common/common.scss';
 	.cash-container{
 		min-height: 100%;
 		background: #EAEEFC;
@@ -350,16 +340,16 @@
 			top: 50rpx;
 			left: 0;
 			z-index: 10;
-			padding-top: 340rpx;
+			padding-top: 260rpx;
 			box-sizing: border-box;
 			.cash-content-top{
-				line-height: 140rpx;
-				margin-bottom: 20rpx;
-				height: 140rpx;
+				line-height: 90rpx;
+				margin-bottom: 10rpx;
+				height: 90rpx;
 				padding: 0 60rpx;
 				box-sizing: border-box;
 				.titles{
-					font-size: 68rpx;
+					font-size: 50rpx;
 					color: #2F2F51;	
 				}
 				.tags{
@@ -379,7 +369,7 @@
 			.content-bottom{
 				height: calc(100% - 160rpx);
 				background: #EAEEFC;
-				padding: 44rpx 68rpx 100rpx 68rpx;
+				padding: 30rpx 68rpx 40rpx 68rpx;
 				box-sizing: border-box;
 				.down-icon{
 					width: 30rpx;
@@ -387,13 +377,13 @@
 					margin: 0 auto;
 				}
 				.form-block{
-					margin-top: 52rpx;
+					margin-top: 30rpx;
 					.cash-rows{
 						display: flex;
-						margin-bottom: 46rpx;
+						margin-bottom: 24rpx;
 						.rows-label{
 							width: 142rpx;
-							font-size: 28rpx;
+							font-size: 26rpx;
 							color: #707070;
 							line-height: 48rpx;
 						}
@@ -423,7 +413,7 @@
 				}
 				
 				.rule-block{
-					padding: 38rpx 22rpx 50rpx 34rpx;
+					padding: 20rpx 30rpx;
 					box-sizing: border-box;
 					border:1px solid #ccc;
 					border-radius: 18rpx;
@@ -441,7 +431,7 @@
 				}
 				
 				.agree-block{
-					margin-top: 36rpx;
+					margin-top: 20rpx;
 					text-align: center;
 					.label-txt{
 						line-height: 32rpx;
@@ -450,7 +440,7 @@
 				}
 				
 				.btn-block{
-					margin-top: 86rpx;
+					margin-top: 40rpx;
 					.button{
 						background: #f7f7f7;
 						color: rgba(0,0,0,.3);
@@ -461,6 +451,47 @@
 					}
 					uni-button:after{
 						border: none;
+					}
+				}
+			}
+		}
+	}
+	
+	@media screen and (min-height: $screenH+'px') {
+		.cash-container{
+			.cash-content{
+				padding-top: 260rpx;
+				.cash-content-top{
+					height: 120rpx;
+					line-height: 120rpx;
+					margin-bottom: 20rpx;
+					.titles{
+						font-size: 60rpx;
+					}
+				}
+				.content-bottom{
+					padding: 30rpx 68rpx 40rpx 68rpx;
+					padding-bottom: 0;
+					.form-block{
+						margin-top: 30rpx;
+						.cash-rows{
+							margin-bottom: 40rpx;
+							.rows-label{
+								font-size: 28rpx;
+							}
+							.rows-input{
+								font-size: 28rpx;
+							}
+						}
+					}
+					.rule-block{
+						padding: 30rpx 22rpx 40rpx 34rpx;
+					}
+					.agree-block{
+						margin-top: 36rpx;
+					}
+					.btn-block{
+						margin-top: 60rpx;
 					}
 				}
 			}

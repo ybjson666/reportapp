@@ -2,13 +2,13 @@
 	<view class="team-container">
 		<view class="title">团队详情</view>
 		<view class="tab-list">
-			<view class="tab-item">
+			<view class="tab-item" @click="goTeamList">
 				<view class="item-top">
 					<text>团队总人数</text>
 					<view class="team-icon"></view>
 				</view>
 				<view class="item-bottom">
-					<text class="team-val">400</text>人
+					<text class="team-val">{{teamInfo.user_total}}</text>人
 				</view>
 			</view>
 			<view class="tab-item last-tab">
@@ -17,35 +17,35 @@
 					<view class="team-icon"><image src="../../static/images/up_icon.png"></image></view>
 				</view>
 				<view class="item-bottom">
-					<text class="team-val">20</text>人
+					<text class="team-val">{{teamInfo.team_week_count}}</text>人
 				</view>
 			</view>
 		</view>
 		
 		<view class="team-content">
-			<view class="team-content-top">
-				已达到升级标准<text class="count">40</text>单
+			<view class="team-content-top" @click="seekInfo" v-if="down_task>=goal_task">
+				已达到升级标准<text class="count">{{teamInfo.goal_task||0}}</text>单
 				<view class="sun-icon"><image src="../../static/images/sun.png"></image></view>
 			</view>
 			<view class="team-list">
-				<view class="team-item" @click="skipPage('../myCount/index')">
+				<view class="team-item" @click="skipPage('1')">
 					<text class="team-lable fl">今日销量</text>
-					<text class="team-val fr">0单</text>
+					<text class="team-val fr">{{teamInfo.today_count}}单</text>
 					<view class="cl"></view>
 				</view>
-				<view class="team-item" @click="skipPage('../myCount/index')">
+				<view class="team-item" @click="skipPage('2')">
 					<text class="team-lable fl">本周销量</text>
-					<text class="team-val fr">20单</text>
+					<text class="team-val fr">{{teamInfo.count_sum}}单</text>
 					<view class="cl"></view>
 				</view>
-				<view class="team-item" @click="skipPage('../myCount/index')">
+				<view class="team-item" @click="skipPage('3')">
 					<text class="team-lable fl">本月销量</text>
-					<text class="team-val fr">30单</text>
+					<text class="team-val fr">{{teamInfo.week_count}}单</text>
 					<view class="cl"></view>
 				</view>
-				<view class="team-item last-item" @click="skipPage('../myCount/index')">
+				<view class="team-item last-item" @click="skipPage('0')">
 					<text class="team-lable fl">总计销量</text>
-					<text class="team-val fr">60单</text>
+					<text class="team-val fr">{{teamInfo.total_count}}单</text>
 					<view class="cl"></view>
 				</view>
 			</view>
@@ -57,15 +57,69 @@
 	export default{
 		data(){
 			return{
-				
+				down_task:"",
+				goal_task:"",
+				type:"",
+				teamInfo:{},
+				cid:""
 			}
 		},
+		onBackPress(event){
+			uni.navigateTo({
+				url:'../team/index'
+			})
+			return true;
+		},
 		methods:{
-			skipPage(url){
+			skipPage(type){
+				const { cid }=this;
 				uni.navigateTo({
-					url
+					url:`../myCount/index?type=${type}&cid=${cid}`
 				})
+			},
+			seekInfo(){
+				uni.navigateTo({
+					url:"../levelInfo/index"
+				})
+			},
+			goTeamList(){
+				let { down_task=0,goal_task=0,teamInfo }=this
+				if(teamInfo.user_total>1){
+					uni.navigateTo({
+						url:`../teamInfo/index?down_task=${down_task}&goal_task=${goal_task}`
+					})
+				}
+			},
+			async getDatas(){
+				const uid=uni.getStorageSync('uid')
+				const token=uni.getStorageSync('token')
+				const { team_id,type,cid}=this;
+				let params={
+					url:"/api/achieve/TeamInfo",
+					data:{uid,token,type,cid}
+				}
+				
+				const result=await this.$http(params);
+				if(result.data.code===200){
+					this.teamInfo=result.data.data;
+				}else if(result.data.code===401){
+					this.showToast(result.data.message);
+					setTimeout(()=>{
+						uni.navigateTo({
+							url:'../login/index'
+						})
+					},800)
+				}else{
+					this.showToast(result.data.message);
+				}
 			}
+		},
+		onLoad(options){
+			this.down_task=options.down_task
+			this.goal_task=options.goal_task
+			this.type=options.team_type
+			this.cid=options.team_id
+			this.getDatas()
 		}
 	}
 </script>

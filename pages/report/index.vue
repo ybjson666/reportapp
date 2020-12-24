@@ -9,7 +9,7 @@
 					<view class="device-pic"><image :src="device.pic"></image></view>
 					<view class="device-info">
 						<view class="device-name">{{device.cate_name}}</view>
-						<view class="device-price">￥{{device.price}}</view>
+						<view class="device-price">￥{{num>0?device.price*num:device.price}}</view>
 					</view>
 					<view class="device-num-block">
 						<view class="add-btn" @click="addNum">+</view>
@@ -48,6 +48,13 @@
 				if(result.data.code===200){
 					this.device=result.data.data;
 					this.cate_id=result.data.data.dcata_id;
+				}else if(result.data.code===401){
+					this.showToast(result.data.message);
+					setTimeout(()=>{
+						uni.navigateTo({
+							url:'../login/index'
+						})
+					},800)
 				}else{
 					this.showToast(result.data.message);
 				}
@@ -82,6 +89,12 @@
 							url:`../orderInfo/index?order_id=${result.data.data.order_id}`
 						})
 					},1000)
+				}else if(result.data.code===401){
+					uni.navigateTo({
+						url:'../login/index'
+					})
+				}else{
+					this.showToast(result.data.message)
 				}
 			},
 			back(){

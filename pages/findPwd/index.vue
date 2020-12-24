@@ -98,6 +98,7 @@
 				}
 				const result=await this.$http(params);
 				if(result.data.code==200){
+					this.showToast('发送成功')
 					if(types==='one'){
 						this.isGetCode=false;
 						this.step='two';

@@ -1,6 +1,6 @@
 <template>
 	<view class="mycount-container">
-		<uni-table  emptyText="暂无数据">
+		<uni-table  :emptyText="emptys">
 			<uni-tr class="table-header">
 				<uni-th>昵称</uni-th>
 				<uni-th>业绩</uni-th>
@@ -13,64 +13,84 @@
 			</uni-tr>
 		</uni-table>
 		<uni-load-more :status="loadStatus" iconType="circle" v-show="isLoadMore"></uni-load-more>
-		<wyb-loading ref="loading"/>
 	</view>
 </template>
 
 <script>
 	import uniTable from '@/components/uni-table/uni-table.vue';
 	import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue"
-	import wybLoading from '@/components/wyb-loading/wyb-loading.vue'
 	export default{
 		data(){
 			return{
-				countList:[
-					{
-						id:'001',
-						nick_name:'阿珂',
-						grade:'1589台',
-						add_time:'2020.03.25'
-					},
-					{
-						id:'002',
-						nick_name:'阿珂',
-						grade:'1589台',
-						add_time:'2020.03.25'
-					},
-					{
-						id:'003',
-						nick_name:'阿珂',
-						grade:'1589台',
-						add_time:'2020.03.25'
-					},
-					{
-						id:'004',
-						nick_name:'阿珂',
-						grade:'1589台',
-						add_time:'2020.03.25'
-					},
-					{
-						id:'005',
-						nick_name:'阿珂',
-						grade:'1589台',
-						add_time:'2020.03.25'
-					}
-				],
+				cid:"",
+				count:"",
+				countList:[],
 				loadStatus:'',
-				isLoadMore:false
+				isLoadMore:false,
+				emptys:"",
+				page:1
 			}
 		},
 		components:{
 			uniTable,
-			uniLoadMore,
-			wybLoading
+			uniLoadMore
 		},
-		mounted(){
-			this.$refs.loading.showLoading();
+		methods:{
+			async getDatas(types){
+				const uid=uni.getStorageSync('uid')
+				const token=uni.getStorageSync('token')
+				const { page,cid,type }=this
+				
+				let params={
+					url:'/api/achieve/UserAchievementsStatistical',
+					data:{uid,token,page,type,cid}
+				}
+				const result=await this.$http(params);
+				if(result.data.code===200){
+					this.page++
+					if(types=='refresh'){
+						this.countList=result.data.data.data;
+						uni.stopPullDownRefresh();
+					}else{
+						this.countList=this.countList.concat(result.data.data.data)
+					}
+					
+				}else if(result.data.code===204){
+					if(types=='refresh'){
+						this.emptys="暂无数据"
+						uni.stopPullDownRefresh();
+					}
+					this.loadStatus='noMore'
+				}else if(result.data.code===401){
+					this.showToast(result.data.message);
+					setTimeout(()=>{
+						uni.navigateTo({
+							url:'../login/index'
+						})
+					},800)
+				}else{
+					this.showToast(result.data.message);
+				}
+			}
+		},
+		onLoad(options){
+			this.cid=options.cid;
+			this.type=options.type;
+			this.getDatas('refresh')
+		},
+		onPullDownRefresh() {
+			this.page=1;
 			setTimeout(()=>{
-				this.$refs.loading.hideLoading();
-			},800)
-		}
+				this.getDatas('refresh');
+			},500)
+		},
+		onReachBottom(){
+			this.loadStatus='loading'
+			this.isLoadMore=true
+			setTimeout(()=>{
+				this.getDatas('loadMore');
+			},500)
+		},
 	}
 </script>
 

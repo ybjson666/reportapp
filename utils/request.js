@@ -11,7 +11,7 @@ export default (postData,callback)=>{
 			dataType:"json",
 			method:postData.types||'post',
 		    success: (res) => {
-		        resolve(res)
+				resolve(res)
 		    },
 			fail:(error)=>{
 				uni.showToast({

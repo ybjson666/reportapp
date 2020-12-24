@@ -146,12 +146,14 @@
 </script>
 
 <style lang="scss" scoped>
+	@import '../../static/common/common.scss';
+	
 	.share-container{
 		min-height: 100%;
 		background-image: url('../../static/images/bg_login.png');
 		background-repeat: no-repeat;
 		background-size: 100%;
-		padding-bottom: 134rpx;
+		// padding-bottom: 134rpx;
 		box-sizing: border-box;
 		.share-header{
 			padding-top: 120rpx;
@@ -235,6 +237,24 @@
 				background: #FEC4D6;
 			}
 		}
-		
+	}
+	
+	@media screen and (max-height: $screenH+'px') {
+		.share-container{
+			padding-bottom: 0;
+			.share-content-block{
+				height: 960rpx;
+				.qrcode{
+					width: 260rpx;
+					bottom:200rpx;
+					left: 80rpx;
+					.qrcode-wraps{
+						width: 220rpx;
+						height: 220rpx;
+						margin: 0 auto;
+					}
+				}
+			}
+		}
 	}
 </style>

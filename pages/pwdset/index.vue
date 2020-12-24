@@ -118,7 +118,6 @@
 </script>
 
 <style lang="scss" scoped>
-	@import '../../static/scss/common.scss';
 	
 	.pwd-container{
 		height: 100%;

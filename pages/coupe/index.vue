@@ -39,6 +39,10 @@
 					this.showToast('反馈成功')
 					this.info=""
 					this.isUse=false
+				}else if(result.data.code===401){
+					uni.navigateTo({
+						url:'../login/index'
+					})
 				}else{
 					this.showToast(result.data.message)
 					this.isUse=false
