@@ -10,7 +10,7 @@
 			<uni-tr v-for="(item,index) in orderList" :key="index">
 				<uni-th>{{item.order_num | formatOrder}}</uni-th>
 				<uni-th>{{formatTimeStr(item.addtime)}}</uni-th>
-				<uni-th>{{item.total_money}}元</uni-th>
+				<uni-th>{{item.total_money}}</uni-th>
 				<uni-th>{{item.num}}单</uni-th>
 			</uni-tr>
 		</uni-table>
@@ -66,7 +66,7 @@
 				}else if(result.data.code===401){
 					this.showToast(result.data.message);
 					setTimeout(()=>{
-						uni.navigateTo({
+						uni.reLaunch({
 							url:'../login/index'
 						})
 					},800)
@@ -126,16 +126,16 @@
 					font-size: 28rpx;
 				}
 				.uni-table-th:nth-child(1){
-					width: 210rpx;
+					width: 160rpx;
 				}
 				.uni-table-th:nth-child(2){
-					width: 180rpx;
+					width: 170rpx;
 				}
 				.uni-table-th:nth-child(3){
 					flex: 1;
 				}
 				.uni-table-th:nth-child(4){
-					flex: 1;
+					width: 150rpx;
 				}
 			}
 		}
@@ -149,17 +149,17 @@
 			}
 			.uni-table-th:nth-child(1){
 				border-radius: 16rpx 0 0 16rpx;
-				width: 210rpx;
+				width: 160rpx;
 			}
 			.uni-table-th:nth-child(2){
-				width: 180rpx;
+				width: 170rpx;
 			}
 			.uni-table-th:nth-child(3){
 				flex: 1;
 			}
 			.uni-table-th:nth-child(4){
 				border-radius: 0 16rpx 16rpx 0;
-				flex: 1;
+				width: 150rpx;
 			}
 		}
 	}

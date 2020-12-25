@@ -111,7 +111,7 @@
 					this.showPay=false;
 				}
 			},
-			goPay(){
+			async goPay(){
 				const { payTypes,orderInfo }=this;
 				
 				if(payTypes==='3'){
@@ -120,6 +120,28 @@
 					uni.navigateTo({
 						url:`../pay/index?orderInfo=${JSON.stringify(payOrder)}`
 					})
+				}else if(payTypes=='2'){
+					let params={
+						url:'/api/cron/wxtest',
+						types:'GET'
+					}
+					const result=await this.$http(params);
+					let payorder=result.data.data
+					
+					if(result.data.code==200){
+						console.log(payorder)
+						uni.requestPayment({
+						    provider: 'wxpay',
+						    orderInfo: payorder, //微信、支付宝订单数据
+						    success: (res) =>{
+								console.log(res)
+						      
+						    },
+						    fail:(err)=> {
+								console.log(err)
+						    }
+						});
+					}
 				}else{
 					this.getPayData();
 				}
@@ -145,7 +167,7 @@
 				 }else if(result.data.code===401){
 					this.showToast(result.data.message);
 					setTimeout(()=>{
-						uni.navigateTo({
+						uni.reLaunch({
 							url:'../login/index'
 						})
 					},800)
@@ -194,7 +216,7 @@
 				}else if(result.data.code===401){
 					this.showToast(result.data.message);
 					setTimeout(()=>{
-						uni.navigateTo({
+						uni.reLaunch({
 							url:'../login/index'
 						})
 					},800)

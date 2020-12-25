@@ -13,14 +13,14 @@
 			</view>
 			<view class="pay-rows last-rows">
 				<text class="rows-label fl">账户余额</text>
-				<text class="rows-info fr">{{banlance}}</text>
+				<text class="rows-info fr">{{balance}}</text>
 				<view class="cl"></view>
 			</view>
 		</view>
 		<view class="pay-item">
 			<view class="pay-rows last-rows">
 				<text class="rows-label fl">安全密码</text>
-				<input type="password" v-enter-number class="rows-input fr" 
+				<input type="password" class="rows-input fr" 
 				v-model="pwd" maxlength="6" placeholder="请输入密码"/>
 				<view class="cl"></view>
 			</view>
@@ -34,13 +34,13 @@
 		data(){
 			return{
 				order:{},
-				banlance:"",
+				balance:"",
 				pwd:"",
 				isUse:false
 			}
 		},
-		created(){
-			this.banlance=uni.getStorageSync('balance');
+		onShow(){
+			this.refreshUser(this)
 		},
 		methods:{
 			async goPay(){
@@ -48,7 +48,7 @@
 				const { balance,pwd }=this
 				const uid=uni.getStorageSync('uid');
 				const token=uni.getStorageSync('token');
-				if(balance<total_money){
+				if(parseInt(balance)<parseInt(total_money)){
 					this.showToast('您的余额不足');
 					return false
 				}else if(!pwd){
@@ -65,7 +65,7 @@
 				 if(result.data.code===200){
 					 this.isUse=false;
 					 this.showToast('支付成功');
-					 this.refreshUser();
+					 this.refreshUser(this);
 					 setTimeout(()=>{
 						 uni.navigateTo({
 						 	url:`../paySucc/index?addtime=${addtime}`
@@ -74,32 +74,18 @@
 				 }else{
 					 this.showToast(result.data.message);
 					 this.isUse=false;
-					 setTimeout(()=>{
-						uni.navigateTo({
-							url:`../report/index`
-						})
-					 },1000)
 				}
 			},
-			async refreshUser(){
-				const uid=uni.getStorageSync('uid')
-				const token=uni.getStorageSync('token')
-				const { port }=this;
-				let params={
-					url:'/api/user/UserRefresh',
-					data:{port,app_version:'1.0',uid,token}
-				}
-				const result=await this.$http(params);
-				if(result.data.code===200){
-					this.balance=result.data.data.money;
-					uni.setStorageSync('balance',result.data.data.money)
-				}else{
-					this.showToast(result.data.message);
-				}
-			}
 		},
 		onLoad(options){
 			this.order=JSON.parse(options.orderInfo);
+		},
+		watch:{
+			pwd(str){
+				this.$nextTick(()=>{
+					this.pwd=str.replace(/[^\d]/g,'')
+				})
+			}
 		}
 	}
 </script>

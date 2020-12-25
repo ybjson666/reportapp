@@ -12,8 +12,8 @@
 			<view class="team-item" v-for="(item,index) in teamList" :key="index" @click="skipPage(item.user_id)">
 				<text class="team-name">{{item.nickname |subName}}</text>
 				<text class="team-time">{{item.addtime | subsTime}}</text>
-				<text class="team-nums">{{item.total_count}}</text>
-				<text class="team-sell">{{item.team_count}}</text>
+				<text class="team-nums">{{item.team_count}}</text>
+				<text class="team-sell">{{item.total_count}}</text>
 			</view>
 		</view>
 	</view>
@@ -26,6 +26,7 @@
 				down_task:"",
 				goal_task:"",
 				teamList:[],
+				cid:"",
 				tabList:[
 					{
 						name:'用户昵称',
@@ -73,11 +74,11 @@
 			async getDatas(types){
 				const uid=uni.getStorageSync('uid')
 				const token=uni.getStorageSync('token')
-				const { nick_status,time_status,num_status,sell_status,page }=this
+				const { nick_status,time_status,num_status,sell_status,page,cid }=this
 				
 				let params={
 					url:"/api/achieve/TeamList",
-					data:{uid,token,nick_status,time_status,num_status,sell_status}
+					data:{uid,token,nick_status,time_status,num_status,sell_status,cid}
 				}
 				
 				const result=await this.$http(params);
@@ -87,7 +88,7 @@
 				}else if(result.data.code===401){
 					this.showToast(result.data.message);
 					setTimeout(()=>{
-						uni.navigateTo({
+						uni.reLaunch({
 							url:'../login/index'
 						})
 					},800)
@@ -99,8 +100,7 @@
 		onLoad(options){
 			this.down_task=options.down_task
 			this.goal_task=options.goal_task
-		},
-		created(){
+			this.cid=options.cid
 			this.getDatas()
 		},
 		filters:{

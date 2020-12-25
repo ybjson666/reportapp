@@ -72,6 +72,13 @@
 						this.isEmpty=true;
 					}
 					uni.stopPullDownRefresh();
+				}else if(result.data.code===401){
+					this.showToast(result.data.message);
+					setTimeout(()=>{
+						uni.reLaunch({
+							url:'../login/index'
+						})
+					},800)
 				}else{
 					this.showToast(result.data.message);
 				}

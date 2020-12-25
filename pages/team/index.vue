@@ -202,7 +202,7 @@
 				}else if(result.data.code===401){
 					this.showToast(result.data.message);
 					setTimeout(()=>{
-						uni.navigateTo({
+						uni.reLaunch({
 							url:'../login/index'
 						})
 					},800)

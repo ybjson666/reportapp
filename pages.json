@@ -20,30 +20,6 @@
 			}
 		},
 		{
-			"path": "pages/findPwd/index",
-			"style":{
-				"navigationBarTitleText": "找回密码",
-				"app-plus": {
-				    "softinputNavBar": "none",
-					"softinputMode": "adjustResize"
-				}
-			}
-		},
-		{
-			"path": "pages/findSucc/index",
-			"style":{
-				"navigationBarTitleText": "找回密码"
-			}
-		},
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "MI-TOOL",
-				"enablePullDownRefresh":true,
-				"onReachBottomDistance":20
-			}
-		},
-		{
             "path" : "pages/myInfo/index",
             "style" : {
                 "enablePullDownRefresh": false,
@@ -58,12 +34,6 @@
                 "enablePullDownRefresh": false
             } 
         },
-		{
-			"path": "pages/count/index",
-			"style":{
-				"navigationBarTitleText": "业绩统计"
-			}
-		},
 		{
 			"path": "pages/report/index",
 			"style":{
@@ -199,7 +169,7 @@
 		{
 			"path": "pages/orderList/index",
 			"style":{
-				"navigationBarTitleText": "个人订单详情",
+				"navigationBarTitleText": "订单列表",
 				"enablePullDownRefresh": true
 			}
 		}

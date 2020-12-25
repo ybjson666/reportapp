@@ -22,7 +22,7 @@ Vue.prototype.refreshUser=async(that)=>{
 	}else if(result.data.code===401){
 		that.showToast(result.data.message);
 		setTimeout(()=>{
-			uni.navigateTo({
+			uni.reLaunch({
 				url:'../login/index'
 			})
 		},800)
@@ -32,30 +32,12 @@ Vue.prototype.refreshUser=async(that)=>{
 }
 App.mpType = 'app'
 
-Vue.directive('enterNumber', { //全局方法  限制input输入框只能输入纯数字 组件中调用如（<el-input v-enter-number v-model="number" ></el-input>）
-  inserted: function(el) {
-    el.addEventListener("keypress", function(e) {
-      e = e || window.event;
-      let charcode = typeof e.charCode === 'number' ? e.charCode : e.keyCode;
-      let re = /\d/;
-      if (!re.test(String.fromCharCode(charcode)) && charcode > 9 && !e.ctrlKey) {
-        if (e.preventDefault) {
-          e.preventDefault();
-        } else {
-          e.returnValue = false;
-        }
-      }
-    });
-  }
-});
-
 var token  = uni.getStorageSync('token');
- 
-	if(!token){
-		uni.redirectTo({
-			url:'/pages/login/index'
-		})
-	}
+if(!token){
+	uni.redirectTo({
+		url:'/pages/login/index'
+	})
+}
 
 
 const app = new Vue({

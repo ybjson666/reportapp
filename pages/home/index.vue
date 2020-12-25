@@ -55,7 +55,7 @@
 					uni.stopPullDownRefresh();
 					// this.$refs.loading.hideLoading();
 				}else if(result.data.code===401){
-					uni.navigateTo({
+					uni.redirectTo({
 						url:'../login/index'
 					})
 				}else{

@@ -7,9 +7,9 @@
 				<uni-th>时间</uni-th>
 			</uni-tr>
 			<uni-tr v-for="(item,index) in countList" :key="index">
-				<uni-th>{{item.nick_name}}</uni-th>
-				<uni-th>{{item.grade}}</uni-th>
-				<uni-th>{{item.add_time}}</uni-th>
+				<uni-th>{{item.nickname}}</uni-th>
+				<uni-th>{{item.num}}台</uni-th>
+				<uni-th>{{item.addtime | fomatTime}}</uni-th>
 			</uni-tr>
 		</uni-table>
 		<uni-load-more :status="loadStatus" iconType="circle" v-show="isLoadMore"></uni-load-more>
@@ -49,6 +49,7 @@
 				if(result.data.code===200){
 					this.page++
 					if(types=='refresh'){
+						console.log(result.data.data.data)
 						this.countList=result.data.data.data;
 						uni.stopPullDownRefresh();
 					}else{
@@ -64,7 +65,7 @@
 				}else if(result.data.code===401){
 					this.showToast(result.data.message);
 					setTimeout(()=>{
-						uni.navigateTo({
+						uni.reLaunch({
 							url:'../login/index'
 						})
 					},800)
@@ -91,6 +92,13 @@
 				this.getDatas('loadMore');
 			},500)
 		},
+		filters:{
+			fomatTime(str){
+				if(str.length){
+					return str.slice(0,10)
+				}
+			}
+		}
 	}
 </script>
 

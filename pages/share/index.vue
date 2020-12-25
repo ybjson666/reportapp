@@ -88,6 +88,13 @@
 					this.shareUrl=`http://${result.data.data.referee_url}`;
 					this.share_code=result.data.data.share_code;
 					callBack&&callBack()
+				}else if(result.data.code===401){
+					this.showToast(result.data.message);
+					setTimeout(()=>{
+						uni.reLaunch({
+							url:'../login/index'
+						})
+					},800)
 				}else{
 					this.showToast(result.data.message)
 				}

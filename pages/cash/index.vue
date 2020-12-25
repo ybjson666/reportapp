@@ -26,7 +26,7 @@
 					</view>
 					<view class="cash-rows">
 						<text class="rows-label">安全密码:</text>
-						<input type="password" v-enter-number v-model="pwd" maxlength="6" class="rows-input" placeholder="请输入6位安全密码"/>
+						<input type="password" v-model="pwd" maxlength="6" class="rows-input" placeholder="请输入6位安全密码"/>
 					</view>
 					<view class="cash-rows card-rows">
 						<text class="rows-label">提现至:</text>
@@ -136,9 +136,7 @@
 		},
 		methods:{
 			goback(){
-				uni.switchTab({
-					url:'/pages/myInfo/index'
-				})
+				uni.navigateBack()
 			},
 			async submit(){
 				const { limitAgree,card_id,money,pwd,cardList}=this;
@@ -199,6 +197,9 @@
 				this.showToast(result.data.code)
 				if(result.data.code===200){
 					let arr=result.data.data;
+					if(!arr.length){
+						this.showAddCard=true
+					}
 					this.cardList=arr.map((item)=>{
 						return {
 							label:item.bank_name,
@@ -208,7 +209,7 @@
 				}else if(result.data.code===401){
 					this.showToast(result.data.message);
 					setTimeout(()=>{
-						uni.navigateTo({
+						uni.reLaunch({
 							url:'../login/index'
 						})
 					},800)
@@ -238,15 +239,16 @@
 				})
 			},
 			judgeEnviron(){//判断环境
-			    var u = navigator.userAgent;
-			    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
-			    var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-			    if (isAndroid) {
-			        return 'android';
-			    }else if (isIOS) {
-			    　　return 'ios';
-			    }else{
-			        return 'pc';
+			    switch(uni.getSystemInfoSync().platform){
+			        case 'android':
+			           return 'android'
+			           break;
+			        case 'ios':
+			           return 'ios'
+			           break;
+			        default:
+			           return 'pc'
+			           break;
 			    }
 			}
 		},
@@ -255,11 +257,12 @@
 		},
 		onLoad(){
 			this.refreshUser(this)
-			let env=this.judgeEnviron();
-			if(env==='android'){
-				this.port='1';
-			}else if(env==='ios'){
-				this.port='2';
+		},
+		watch:{
+			pwd(str){
+				this.$nextTick(()=>{
+					this.pwd=str.replace(/[^\d]/g,'')
+				})
 			}
 		}
 	}

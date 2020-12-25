@@ -1,15 +1,15 @@
 <template>
 	<view class="report-container">
 		<view class="banners">
-			<image :src="device.pic"></image>
+			<image :src="device.pic|formatUrl"></image>
 		</view>
 		<view class="device-block">
 			<view class="device-list">
 				<view class="device-item">
-					<view class="device-pic"><image :src="device.pic"></image></view>
+					<view class="device-pic"><image :src="device.pic|formatUrl"></image></view>
 					<view class="device-info">
 						<view class="device-name">{{device.cate_name}}</view>
-						<view class="device-price">￥{{num>0?device.price*num:device.price}}</view>
+						<view class="device-price">￥{{num>0?device.price*num+'.00':device.price}}</view>
 					</view>
 					<view class="device-num-block">
 						<view class="add-btn" @click="addNum">+</view>
@@ -51,7 +51,7 @@
 				}else if(result.data.code===401){
 					this.showToast(result.data.message);
 					setTimeout(()=>{
-						uni.navigateTo({
+						uni.reLaunch({
 							url:'../login/index'
 						})
 					},800)
@@ -90,9 +90,12 @@
 						})
 					},1000)
 				}else if(result.data.code===401){
-					uni.navigateTo({
-						url:'../login/index'
-					})
+					this.showToast(result.data.message);
+					setTimeout(()=>{
+						uni.redirectTo({
+							url:'../login/index'
+						})
+					},800)
 				}else{
 					this.showToast(result.data.message)
 				}
@@ -109,6 +112,14 @@
 		onBackPress() {
 		    this.back();
 		    return true;
+		},
+		filters:{
+			formatUrl(url){
+				if(url){
+					return url.substr(0,7).toLowerCase() == "http://" ? url : "http://" + url;
+				}
+				
+			}
 		}
 	}
 </script>

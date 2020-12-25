@@ -75,6 +75,9 @@
 					uni.removeStorageSync('token');
 					uni.removeStorageSync('uid');
 					uni.removeStorageSync('phone');
+					uni.redirectTo({
+						url
+					})
 				}else if(url==='../service/index'){
 					uni.makePhoneCall({
 						phoneNumber:this.service_phone
@@ -96,12 +99,10 @@
 				}else{
 					this.showToast(result.data.message)
 				}
-			},
-		},
-		onLoad(){
-			this.getPhone()
+			}
 		},
 		onShow(){
+			this.getPhone()
 			this.refreshUser(this)
 		}
 	}
@@ -117,6 +118,20 @@
 	background-size: 100%;
 	padding-top: 340rpx;
 	box-sizing: border-box;
+	position: relative;
+	.scan-block{
+		position: absolute;
+		right: 40rpx;
+		top: 80rpx;
+		font-size: 20rpx;
+		text-align: center;
+		.scan-icon{
+			width: 40rpx;
+			height: 40rpx;
+			margin: 0 auto;
+			margin-bottom: 10rpx;
+		}
+	}
 	.myinfo-content{
 		padding: 0 32rpx;
 		box-sizing: border-box;

@@ -6,11 +6,11 @@
 			<view class="form-block">
 				<view class="pwd-rows">
 					<text class="rows-label">安全码设置：</text>
-					<input type="password"  v-enter-number v-model="pwd" class="rows-input"  maxlength="6" />
+					<input type="password" v-model="pwd" class="rows-input"  maxlength="6" />
 				</view>
 				<view class="pwd-rows">
 					<text class="rows-label">安全码确认：</text>
-					<input type="password"  v-enter-number  class="rows-input" v-model="pwd2" maxlength="6"/>
+					<input type="password" class="rows-input" v-model="pwd2" maxlength="6" />
 				</view>
 				<view class="pwd-rows code-rows">
 					<text class="rows-label">绑定手机动态验证码：</text>
@@ -40,9 +40,7 @@
 		},
 		methods:{
 			goback(){
-				uni.switchTab({
-					url:'/pages/myInfo/index'
-				})
+				uni.navigateBack()
 			},
 			async getCode(){
 				let phone =uni.getStorageSync('phone');
@@ -77,7 +75,6 @@
 				let uid =uni.getStorageSync('uid');
 				let token =uni.getStorageSync('token');
 				const { pwd,pwd2,code } =this
-				console.log(pwd)
 				
 				if(!pwd){
 					this.showToast("请输入密码")
@@ -111,6 +108,18 @@
 					this.showToast(result.data.message);
 					this.isSave=false;
 				}
+			}
+		},
+		watch:{
+			pwd2(str){
+				this.$nextTick(()=>{
+					this.pwd2=str.replace(/[^\d]/g,'')
+				})
+			},
+			pwd(str){
+				this.$nextTick(()=>{
+					this.pwd=str.replace(/[^\d]/g,'')
+				})
 			}
 		}
 		

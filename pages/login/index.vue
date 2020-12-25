@@ -52,17 +52,9 @@
 				isUse:false
 			}
 		},
-		onBackPress(){
-			return true
-		},
 		methods:{
 			focusEnv(type){
 				this.seleRows=type;
-			},
-			goFindPwd(){
-				uni.navigateTo({
-				    url: '../findPwd/index'
-				});
 			},
 			async getCode(){
 				const { phone }=this;

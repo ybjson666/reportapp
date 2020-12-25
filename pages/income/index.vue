@@ -90,7 +90,7 @@
 				}else if(result.data.code===401){
 					this.showToast(result.data.message);
 					setTimeout(()=>{
-						uni.navigateTo({
+						uni.reLaunch({
 							url:'../login/index'
 						})
 					},800)
@@ -186,7 +186,7 @@
 						width: 280rpx;
 					}
 					.type-tab{
-						width: 230rpx;
+						width: 180rpx;
 					}
 					.money-tab{
 						flex: 1;
@@ -209,7 +209,7 @@
 								width: 280rpx;
 							}
 							.item-type{
-								width: 230rpx;
+								width: 180rpx;
 							}
 							.item-money{
 								flex: 1;

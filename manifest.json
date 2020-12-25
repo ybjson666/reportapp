@@ -1,6 +1,6 @@
 {
     "name" : "mitu",
-    "appid" : "__UNI__AD25F03",
+    "appid" : "__UNI__UNIAD25F03",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -17,9 +17,11 @@
         },
         "modules" : {
             "Contacts" : {},
-            "OAuth" : {},
             "Payment" : {},
-            "Share" : {}
+            "Push" : {},
+            "Share" : {},
+            "Geolocation" : {},
+            "OAuth" : {}
         },
         /* 模块配置 */
         "distribute" : {
@@ -56,8 +58,8 @@
             "sdkConfigs" : {
                 "oauth" : {
                     "weixin" : {
-                        "appid" : "wx05e8b62f0b972d55",
-                        "appsecret" : "cbbeb63e74ab33da412107eba3dcaf78",
+                        "appid" : "wxfc05c494984a1992",
+                        "appsecret" : "",
                         "UniversalLinks" : ""
                     }
                 },
@@ -68,16 +70,19 @@
                     },
                     "weixin" : {
                         "__platform__" : [ "ios", "android" ],
-                        "appid" : "wx05e8b62f0b972d55",
+                        "appid" : "wxfc05c494984a1992",
                         "UniversalLinks" : ""
-                    }
+                    },
+                    "appleiap" : {}
                 },
                 "share" : {
                     "weixin" : {
-                        "appid" : "wx05e8b62f0b972d55",
+                        "appid" : "wxfc05c494984a1992",
                         "UniversalLinks" : ""
                     }
-                }
+                },
+                "push" : {},
+                "geolocation" : {}
             },
             "icons" : {
                 "android" : {

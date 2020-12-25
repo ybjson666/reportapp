@@ -24,7 +24,7 @@
 		
 		<view class="team-content">
 			<view class="team-content-top" @click="seekInfo" v-if="down_task>=goal_task">
-				已达到升级标准<text class="count">{{teamInfo.goal_task||0}}</text>单
+				已达到升级标准<text class="count">{{goal_task||0}}</text>单
 				<view class="sun-icon"><image src="../../static/images/sun.png"></image></view>
 			</view>
 			<view class="team-list">
@@ -35,12 +35,12 @@
 				</view>
 				<view class="team-item" @click="skipPage('2')">
 					<text class="team-lable fl">本周销量</text>
-					<text class="team-val fr">{{teamInfo.count_sum}}单</text>
+					<text class="team-val fr">{{teamInfo.week_count}}单</text>
 					<view class="cl"></view>
 				</view>
 				<view class="team-item" @click="skipPage('3')">
 					<text class="team-lable fl">本月销量</text>
-					<text class="team-val fr">{{teamInfo.week_count}}单</text>
+					<text class="team-val fr">{{teamInfo.count_sum}}单</text>
 					<view class="cl"></view>
 				</view>
 				<view class="team-item last-item" @click="skipPage('0')">
@@ -83,10 +83,10 @@
 				})
 			},
 			goTeamList(){
-				let { down_task=0,goal_task=0,teamInfo }=this
+				let { down_task=0,goal_task=0,teamInfo,cid }=this
 				if(teamInfo.user_total>1){
 					uni.navigateTo({
-						url:`../teamInfo/index?down_task=${down_task}&goal_task=${goal_task}`
+						url:`../teamInfo/index?down_task=${down_task}&goal_task=${goal_task}&cid=${cid}`
 					})
 				}
 			},
@@ -105,7 +105,7 @@
 				}else if(result.data.code===401){
 					this.showToast(result.data.message);
 					setTimeout(()=>{
-						uni.navigateTo({
+						uni.reLaunch({
 							url:'../login/index'
 						})
 					},800)
